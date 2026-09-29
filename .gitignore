@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Hospital and derived data: never commit
+data/raw/**
+!data/raw/lakeside/
+!data/raw/lakeside/.gitkeep
+!data/raw/riverside/
+!data/raw/riverside/.gitkeep
+data/bronze/**
+!data/bronze/.gitkeep
+data/quarantine/**
+!data/quarantine/.gitkeep
+
+# Outputs may contain derived sensitive information
+outputs/**
+!outputs/.gitkeep
+
+# Local tooling
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
