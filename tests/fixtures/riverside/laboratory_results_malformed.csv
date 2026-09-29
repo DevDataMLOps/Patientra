@@ -1,0 +1,4 @@
+patient_id,test_code,result,unit
+SYN-001,HGB,13.2,g/dL
+SYN-002,CRP,7.0
+SYN-003,K,4.1,mmol/L,unexpected

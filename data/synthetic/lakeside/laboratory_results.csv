@@ -1,0 +1,3 @@
+patient_id,admission_id,collected_at,test_code,result,unit
+LS-SYN-001,LS-A-SYN-001,2026-01-02 07:00,HGB,13.2,g/dL
+LS-SYN-002,LS-A-SYN-002,02/11/2026 08:00,GLU,108,mg/dL

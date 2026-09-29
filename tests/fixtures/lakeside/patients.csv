@@ -1,0 +1,3 @@
+patient_id,date_of_birth,sex,full_name
+000123,03/04/26,F,SYNTHETIC Alice Example
+R-009,1990-12-31,1,SYNTHETIC Bob Example
