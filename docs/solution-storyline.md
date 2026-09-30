@@ -1,5 +1,9 @@
 # PATIENTRA — Clean Data Before Smart Care
 
+**One Patient. One Care.**
+
+Two hospitals. One connected patient identity. A more trustworthy foundation for healthcare intelligence. The complementary tagline expresses a human-centered ambition for continuity, grounded in governed identity resolution; it does not mean PATIENTRA delivers or guarantees clinical care.
+
 ## 1. The Invisible Patient
 
 A hospital can record every encounter and still miss part of a patient's journey. When a person returns through another hospital's doors, a new local identifier can make a connected story look like two unrelated visits. The encounter is visible. The connection is missing.
@@ -95,3 +99,5 @@ PATIENTRA aligns with several of the **United Nations Sustainable Development Go
 The illustrative patient at the beginning did not need a more impressive dashboard. Their journey needed a trustworthy connection. PATIENTRA demonstrates how to build that connection carefully, account for uncertainty, and show the evidence behind the answer.
 
 **Clean data before smart care: make the journey visible, keep people in control, and earn the next decision with evidence.**
+
+**One Patient. One Care.** A human-centered ambition, supported by trustworthy data and accountable identity links.

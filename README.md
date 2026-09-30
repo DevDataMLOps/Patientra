@@ -5,6 +5,11 @@
 <h1 align="center">PATIENTRA</h1>
 
 <p align="center">
+  <strong>Clean Data Before Smart Care.</strong><br>
+  <em>One Patient. One Care.</em>
+</p>
+
+<p align="center">
   <strong>Privacy-conscious patient identity resolution and readmission analytics, built on a fully auditable Bronze-to-Gold data pipeline.</strong>
 </p>
 
