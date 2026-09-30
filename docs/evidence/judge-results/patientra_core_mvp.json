@@ -1,0 +1,46 @@
+{
+  "core_mvp_rule_version": "patientra-core-mvp-v1",
+  "interpretation_boundary": "Aggregate synthetic-case-study evidence only; no causal, clinical, patient-level risk, or production matching conclusion.",
+  "questions": {
+    "highest_released_readmission_diagnosis": {
+      "diagnosis_group": "I50",
+      "eligible_admissions": 414,
+      "readmission_rate_pct": 32.13,
+      "readmitted_admissions": 133
+    },
+    "identity_resolution_workload": {
+      "automatic_matches": 304,
+      "human_review_outcomes": {
+        "abstained": 0,
+        "accepted": 4,
+        "pending": 0,
+        "rejected": 4
+      },
+      "sent_for_human_review": 8
+    },
+    "matching_impact": {
+      "after_identity_matching": {
+        "readmission_rate_pct": 19.42,
+        "readmitted_admissions": 549
+      },
+      "before_identity_matching": {
+        "readmission_rate_pct": 17.9,
+        "readmitted_admissions": 506
+      },
+      "eligible_admissions": 2827,
+      "hidden_cross_hospital_readmissions": 43,
+      "percentage_point_change": 1.52
+    }
+  },
+  "source_rule_versions": {
+    "analytics": "phase5-analytics-v1",
+    "gold": "phase4-gold-v1",
+    "identity": "phase3-identity-v1"
+  },
+  "source_sha256": {
+    "analytics_report": "04d72cb00b774a2dcba7297e6c982829e418aaab56a6402ef220c949ba49ea09",
+    "gold": "0560061b8e62443b2be215786329267ec6edbd74288b74e8337b9aae714faecb",
+    "identity_audit": "341714ba99fef145e56fdbe04e9696055c26dc629fa98154586e8dd098211cb6",
+    "silver_admissions": "07008c0206e1d5388113c175bb0d59d3f445989eefd02f9bbb14ae7586028ead"
+  }
+}

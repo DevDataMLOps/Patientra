@@ -11,7 +11,7 @@ The 13 checks cover:
 
 1. Phase 1–5 evidence files;
 2. the phase evidence index;
-3. package version `0.6.0`;
+3. package version `0.6.1`;
 4. Git-ignore rules for Gold and operational outputs;
 5. Gold hash lineage into Phase 5;
 6. analytics JSON/CSV hashes;

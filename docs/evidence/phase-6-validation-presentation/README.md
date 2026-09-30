@@ -17,10 +17,10 @@ publish protected source, identity, Gold, or suppressed values.
 | Analytics breakdown rows | 51 |
 | Suppressed breakdown rows | 8 |
 | Actual identifier hits in analytics outputs | 0 |
-| Complete automated test suite | 31 passed |
+| Complete automated test suite | 34 passed |
 
 The release validation report SHA-256 is
-`a835c4edc89d8016a6400007fc33a079497a940f195b7b223d4e813d580aba52`.
+`fa72a5b62cedc1e60d6a82101d7ad217445d5cb13efe5bc32f094266c82f12e0`.
 It independently verified these upstream hashes:
 
 - Gold CSV: `0560061b8e62443b2be215786329267ec6edbd74288b74e8337b9aae714faecb`

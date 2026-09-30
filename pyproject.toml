@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "patientra"
-version = "0.6.0"
+version = "0.6.1"
 description = "Validated Bronze-to-Gold data and aggregate readmission analytics for PATIENTRA"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -34,6 +34,7 @@ patientra-match = "patientra.matching.identity:main"
 patientra-gold = "patientra.features.gold:main"
 patientra-analytics = "patientra.analytics.readmission:main"
 patientra-validate = "patientra.validation.release:main"
+patientra-mvp = "patientra.mvp.core:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

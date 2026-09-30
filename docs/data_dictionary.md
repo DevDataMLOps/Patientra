@@ -95,3 +95,17 @@ See `analytics.md`.
 - verified SHA-256 hashes for Gold and the two deterministic analytics reports.
 
 It contains no patient or admission identifiers. See `validation.md`.
+
+## PATIENTRA Core MVP output
+
+`patientra_core_mvp.json` is an aggregate-only decision summary built from the governed
+Silver admissions, Gold labels, Phase 3 identity audit, and Phase 5 analytics report.
+It contains:
+
+- before- and after-identity-matching readmission counts and rates on the same eligible
+  admission cohort, plus the recovered hidden-readmission count;
+- the highest released, unsuppressed diagnosis group and its aggregate rate; and
+- automatic-match and human-review workload counts, including review outcomes.
+
+The report also records rule versions and SHA-256 hashes for all four inputs. It contains
+no local patient, admission, master-patient, or review-case identifier. See `core_mvp.md`.

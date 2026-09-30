@@ -19,7 +19,7 @@ from patientra.features.gold import GOLD_FIELDS
 
 
 RULE_VERSION = "phase6-validation-v1"
-EXPECTED_PACKAGE_VERSION = "0.6.0"
+EXPECTED_PACKAGE_VERSION = "0.6.1"
 EVIDENCE_FILES = (
     "docs/evidence/phase-1-bronze/README.md",
     "docs/evidence/phase-2-silver/README.md",

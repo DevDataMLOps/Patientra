@@ -42,7 +42,7 @@ Run the synthetic test suite:
 python -m pytest -q --basetemp work/pytest
 ```
 
-Expected result: `31 passed`.
+Expected result: `34 passed`.
 
 Then show the [Phase 6 evidence](evidence/phase-6-validation-presentation/README.md):
 
@@ -51,7 +51,12 @@ Then show the [Phase 6 evidence](evidence/phase-6-validation-presentation/README
 - 8 breakdown rows are suppressed; and
 - the identifier scan found zero hits in analytics outputs.
 
-## 4:00–5:00 — Close with the decision story
+## 4:00–5:00 — Close with the Core MVP decision story
+
+Run `patientra-mvp` or open the Core MVP evidence and state the three answers: the
+readmission rate moves from 17.90% to 19.42% after identity matching, I50 is the highest
+released diagnosis group at 32.13%, and identity resolution routed 304 matches
+automatically with 8 sent for human review.
 
 Open the [stakeholder presentation](presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx).
 Summarize how PATIENTRA converts fragmented hospital extracts into defensible aggregate

@@ -41,6 +41,9 @@ leakage-controlled Gold features + readmission label
 suppressed aggregate readmission analytics
         |
         v
+Core MVP aggregate business answers
+        |
+        v
 release validation + aggregate stakeholder presentation
         |
         v
@@ -58,6 +61,7 @@ future separately governed modeling, if approved
 | `data/gold` | Admission features, labels, and aggregate audit | Yes in CSV | No |
 | `outputs/phase5` | Suppressed aggregate analytics and audit | No direct identifiers | No |
 | `outputs/phase6` | Release validation report | No direct identifiers | No |
+| `outputs/mvp` | Three aggregate Core MVP answers | No direct identifiers | No |
 | `data/quarantine` | Structurally invalid rows | Yes | No |
 | `data/synthetic` | Demonstration and development | No real data | Yes |
 | `outputs` | Approved non-sensitive deliverables only | Must not | Empty only |
@@ -105,5 +109,7 @@ networking, audit logs, versioning, retention rules, and a secrets manager.
   primary plus complementary suppression to small breakdown cells.
 - Phase 6 independently reconciles evidence, hashes, rows, labels, breakdowns,
   suppression, identifiers, and rule versions before presentation.
+- The Core MVP reconciles identity workload with the Gold/analytics cohort and emits
+  only the three aggregate business answers plus source hashes.
 - Model training, patient-level risk scoring, causal inference, and clinical
   recommendations remain out of scope.

@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://github.com/DevDataMLOps/Patientra/actions/workflows/ci.yml"><img src="https://github.com/DevDataMLOps/Patientra/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
   <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/release-v0.6.0-0F766E" alt="Release v0.6.0">
+  <img src="https://img.shields.io/badge/release-v0.6.1-0F766E" alt="Release v0.6.1">
   <img src="https://img.shields.io/badge/release_gate-13%2F13_passed-15803D" alt="13 of 13 release checks passed">
   <img src="https://img.shields.io/badge/patient_data-not_in_Git-7C3AED" alt="Patient data is not stored in Git">
 </p>
@@ -25,6 +25,10 @@
 </p>
 
 ## RESULTS
+
+These are the three business questions the Core MVP calculates from the governed
+pipeline: identity-matching impact, the highest released diagnosis-group rate, and
+identity-resolution workload.
 
 <table>
   <tr>
@@ -74,7 +78,7 @@ All figures below come from the checked-in, aggregate-only evidence chain.
 | 30-day readmissions | 549 |
 | Overall admission-level rate | 19.42% (Wilson 95% CI: 18.00%–20.92%) |
 | Suppressed aggregate rows | 8 of 51 |
-| Automated tests | 31 passed |
+| Automated tests | 34 passed |
 | Independent release checks | 13 of 13 passed |
 | Identifier hits in analytics outputs | 0 |
 
@@ -91,6 +95,9 @@ flowchart LR
     C --> D[Identity resolution<br/>one-to-one rules + human review]
     D --> E[Gold<br/>admission features + 30-day label]
     E --> F[Aggregate analytics<br/>Wilson intervals + suppression]
+    D --> M[Core MVP<br/>matching workload]
+    F --> M
+    M --> J[Three aggregate<br/>business answers]
     F --> G{Phase 6<br/>release gate}
     G -->|13/13 pass| H[Stakeholder presentation]
     G -->|any failure| I[Stop release]
@@ -151,6 +158,7 @@ The command-line interfaces are installed with the package:
 | Identity | `patientra-match` | Protected patient master and review queue |
 | Gold | `patientra-gold` | Admission-grain feature and label table |
 | Analytics | `patientra-analytics` | Suppressed aggregate JSON and CSV |
+| Core MVP | `patientra-mvp` | Three aggregate business answers in one JSON report |
 | Release | `patientra-validate` | Independent release-validation report |
 
 ### 1. Profile and ingest
@@ -201,6 +209,14 @@ patientra-analytics --gold data/gold/readmission_features.csv --output-dir outpu
 
 ### 6. Run the release gate
 
+First calculate the Core MVP answers:
+
+```powershell
+patientra-mvp --silver-admissions data/silver/admissions.silver.csv --gold data/gold/readmission_features.csv --identity-audit data/matching/identity_audit.json --analytics-report outputs/phase5/readmission_analytics.json --output outputs/mvp/patientra_core_mvp.json
+```
+
+Then run the independent release gate:
+
 ```powershell
 patientra-validate --repository-root . --gold data/gold/readmission_features.csv --gold-audit data/gold/readmission_feature_audit.json --analytics-report outputs/phase5/readmission_analytics.json --analytics-breakdowns outputs/phase5/readmission_breakdowns.csv --analytics-audit outputs/phase5/readmission_analytics_audit.json --output outputs/phase6/release_validation.json
 ```
@@ -231,6 +247,7 @@ Bronze values are never changed by downstream stages.
 | `data/quarantine/` | Rejected rows and reason codes | Yes | No |
 | `outputs/phase5/` | Disclosure-controlled analytics | No direct identifiers | No |
 | `outputs/phase6/` | Release-validation report | No direct identifiers | No |
+| `outputs/mvp/` | Three aggregate Core MVP answers | No direct identifiers | No |
 | `docs/evidence/` | Aggregate verification evidence | No patient-level values | Yes |
 
 Hashing does not automatically de-identify data. Suppression reduces disclosure risk but
@@ -250,6 +267,7 @@ Patientra/
 │   ├── matching/            Identity resolution and review application
 │   ├── features/            Gold features and readmission labels
 │   ├── analytics/           Aggregate rates, intervals, and suppression
+│   ├── mvp/                 Three aggregate business/demo answers
 │   └── validation/          Cross-phase release gate
 ├── tests/                   Synthetic, reproducible test suite
 ├── CONTRIBUTING.md          Development and review expectations
@@ -267,6 +285,7 @@ Patientra/
 - [Gold feature and label contract](docs/gold.md)
 - [Readmission analytics methodology](docs/analytics.md)
 - [Release-validation contract](docs/validation.md)
+- [Core MVP contract](docs/core_mvp.md)
 - [5-minute judge/demo runbook](docs/demo.md)
 - [Phase 6 presentation](docs/presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx)
 

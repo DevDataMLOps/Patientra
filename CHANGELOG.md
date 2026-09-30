@@ -3,6 +3,13 @@
 All notable changes to PATIENTRA are documented here. Versions follow the six project
 phases rather than claiming production or clinical release readiness.
 
+## 0.6.1 — Core MVP decision summary
+
+- Added a reproducible aggregate-only command for the three headline business answers.
+- Added same-cohort before/after identity-matching reconciliation and hidden-readmission
+  recovery counts.
+- Added source-hash lineage, fail-closed cross-phase checks, and three focused tests.
+
 ## 0.6.0 — Validation and presentation
 
 - Added an independent 13-check release gate covering evidence, hashes, row and label

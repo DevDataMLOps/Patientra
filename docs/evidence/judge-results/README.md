@@ -13,6 +13,10 @@
 
 ## Derivation
 
+The checked-in [`patientra_core_mvp.json`](patientra_core_mvp.json) is the aggregate-only
+output of `patientra-core-mvp-v1` on the official local pipeline files. Its SHA-256 is
+`a5e7c98f21b47f1032312319d4fcba533ed19be13baa9eb56bb5a0d4b9900a15`.
+
 The comparison holds the Phase 4/5 eligible cohort fixed at 2,827 admissions and changes
 only the identity key used to find a qualifying later admission.
 

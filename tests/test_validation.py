@@ -81,7 +81,7 @@ def _release_fixture(tmp_path: Path) -> dict[str, Path]:
     evidence_index.write_text("\n".join(lines) + "\n", encoding="utf-8")
     (root / ".gitignore").write_text("data/gold/**\noutputs/**\n", encoding="utf-8")
     (root / "pyproject.toml").write_text(
-        '[project]\nname = "patientra"\nversion = "0.6.0"\n', encoding="utf-8"
+        '[project]\nname = "patientra"\nversion = "0.6.1"\n', encoding="utf-8"
     )
 
     gold_rows = [

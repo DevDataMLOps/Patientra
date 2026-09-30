@@ -38,6 +38,8 @@ and approval from the data owner/security team before receiving real data.
 - Presentation materials must use only reviewed aggregate evidence. Do not paste
   patient-level screenshots, Gold rows, review cases, or unsuppressed small cells into
   slides, notes, or supporting files.
+- The Core MVP report is aggregate-only and includes source hashes, not patient,
+  admission, master-patient, or review-case identifiers.
 - Restrict exports and validate that temporary files inherit secure directory controls.
 
 ## Sharing and publishing
