@@ -1,4 +1,4 @@
-# Phase 1 architecture
+# Bronze, Silver, and identity architecture
 
 ## Purpose
 
@@ -23,10 +23,19 @@ source-specific raw landing zone (read-only operationally)
 metadata-only manifest
         |
         v
-future Silver cleaning, matching, and governed human review
+Silver schema contract, cleaning, deduplication, and reason-coded quarantine
         |
         v
-future Gold admission features and 30-day readmission labels
+governed candidate blocking and one-to-one identity decisions
+        |
+        +------ uncertain evidence ------> protected human review queue
+        |                                      |
+        |                         ACCEPT / REJECT / ABSTAIN
+        v                                      |
+patient_master + decision evidence <-----------+
+        |
+        v
+future Gold features and readmission labels
 ```
 
 ## Boundaries and trust
@@ -35,6 +44,8 @@ future Gold admission features and 30-day readmission labels
 |---|---|---:|---:|
 | `data/raw` | Original provider delivery | Yes, when available | No |
 | `data/bronze` | Parsed cells plus lineage | Yes | No |
+| `data/silver` | Standardized records plus metadata-only audit/profile | Yes in CSVs | No |
+| `data/matching` | Protected crosswalk, decisions, and review queue | Yes | No |
 | `data/quarantine` | Structurally invalid rows | Yes | No |
 | `data/synthetic` | Demonstration and development | No real data | Yes |
 | `outputs` | Approved non-sensitive deliverables only | Must not | Empty only |
@@ -65,11 +76,15 @@ networking, audit logs, versioning, retention rules, and a secrets manager.
 - Output permissions are restricted on a best-effort basis; access control must also
   be enforced by the host and production platform.
 
-## Known Phase 1 limitations
+## Current boundaries
 
 - Header-based sensitive-column detection is advisory and cannot discover all PHI.
 - CSV formula payloads remain inert text here but can execute if opened in a
   spreadsheet; do not open hospital exports in desktop spreadsheet software.
 - Deterministic output names support a simple starter workflow, not multi-version
   orchestration. Production should key objects by delivery ID and hash.
-- Phase 1 checks structure, not clinical validity or cross-file referential integrity.
+- Silver checks the documented starter schema, local keys, references, and chronology,
+  but does not claim clinical plausibility ranges without an approved clinical rulebook.
+- Identity resolution accepts only high-confidence one-to-one links; uncertain links
+  require human review and remain separate until accepted.
+- Readmission labeling, features, and outcome analysis remain out of scope.

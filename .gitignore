@@ -23,6 +23,10 @@ data/raw/**
 !data/raw/riverside/.gitkeep
 data/bronze/**
 !data/bronze/.gitkeep
+data/silver/**
+!data/silver/.gitkeep
+data/matching/**
+!data/matching/.gitkeep
 data/quarantine/**
 !data/quarantine/.gitkeep
 
@@ -35,3 +39,4 @@ outputs/**
 Thumbs.db
 .idea/
 .vscode/
+work/

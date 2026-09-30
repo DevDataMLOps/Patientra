@@ -1,24 +1,21 @@
-# Phase 2 readiness gate
+# Phase 2 decisions and next gate
 
-Do not begin Silver cleaning or patient matching until the following are available:
+The official starter README and all three expected synthetic datasets are now
+available. Phase 2 implements and tests schema profiling, deterministic Silver
+standardization, deduplication, quarantine, and reconciliation as documented in
+`silver.md`.
 
-- Representative, authorized files from both hospitals plus delivery manifests.
-- Data-owner dictionaries and clarification of grain, keys, timestamps, time zones,
-  null conventions, diagnosis systems/versions, lab test identifiers, and units.
-- Reconciliation totals and acceptance thresholds per file.
-- A clinically approved mapping strategy for dates, sex values, diagnoses, labs, and
-  invalid-record reason codes.
-- A privacy-reviewed identity-resolution specification defining candidate generation,
-  match evidence, thresholds, prohibited fields, false-merge risk, and audit trail.
-- Named human reviewers, least-privilege review tooling, escalation routes, service
-  levels, and a way to reverse an incorrect link.
-- A precise readmission cohort and label definition, including transfers, deaths,
-  planned admissions, observation stays, same-day events, boundary times, and leakage
-  controls.
+Two interpretation choices remain explicit rather than embedded assumptions:
 
-Recommended next deliverables are source-specific schema contracts, profiling reports
-that expose no patient values, Silver validation rules, a pseudonymized identity map,
-a human review queue, reconciliation tests, and a versioned Gold feature specification.
+- Riverside slash dates are run as DMY based on unambiguous dataset-wide evidence.
+- Riverside numeric sex codes are supplied as `1=M, 2=F` at runtime and require
+  confirmation from the challenge data owner before production use.
 
-No quality rates, cross-hospital matches, hidden readmissions, labels, or model metrics
-can be calculated before authorized real data and governance decisions exist.
+Phase 3 now implements the required candidate generation, permitted comparison fields,
+false-merge-first acceptance boundary, one-to-one constraint, protected review queue,
+HMAC identifiers, reversibility, and aggregate audit. See `matching_strategy.md` and
+`human_oversight.md`.
+
+Do not create readmission labels until the cohort, transfer handling, death exclusion,
+same-day/boundary behavior, planned admissions, timestamps, and leakage controls are
+approved. Phases 1–3 still make no readmission outcome claims.

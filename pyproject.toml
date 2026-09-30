@@ -4,14 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "patientra"
-version = "0.1.0"
-description = "Phase 1 Bronze ingestion starter for the PATIENTRA hackathon"
+version = "0.3.0"
+description = "Governed Bronze, Silver, and patient identity resolution for PATIENTRA"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.scripts]
 patientra-ingest = "patientra.ingestion.ingest:main"
+patientra-profile = "patientra.profiling:main"
+patientra-silver = "patientra.transformations.silver:main"
+patientra-match = "patientra.matching.identity:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

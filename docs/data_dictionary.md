@@ -1,49 +1,52 @@
-# Data dictionary and Bronze contract
+# Data dictionary and layer contracts
 
-No real source schema has been supplied. The clinical columns below are therefore
-dataset families to confirm during source onboarding, not asserted field names.
+## Official source schemas
 
-## Expected logical source datasets
-
-| Dataset family | Business grain to confirm | Examples of concepts to confirm |
+| Dataset | Grain | Source columns |
 |---|---|---|
-| Patients | One current registration record or one version per local patient | Local patient identifier, demographics, contact fields |
-| Admissions | One encounter/admission | Local encounter ID, local patient ID, admit/discharge times, diagnoses |
-| Laboratory results | One reported test result/version | Local patient/encounter ID, specimen/result time, test, value, unit |
+| patients | One local hospital registration | `patient_id`, `source_system`, `first_name`, `last_name`, `date_of_birth`, `sex`, `phone`, `state` |
+| admissions | One hospital stay source row | `admission_id`, `patient_id`, `hospital`, `admit_date`, `discharge_date`, `diagnosis_code`, `discharge_status` |
+| lab_results | One reported test result | `lab_id`, `admission_id`, `test_name`, `result_value`, `unit`, `result_time` |
 
-Both Lakeside General Hospital and Riverside Specialist Hospital may name, encode,
-and version these concepts differently. Phase 1 does not force a shared schema.
+The official README defines `LG-xxxxxx` and `RSxxxxx` patient IDs, LG/RS source
+systems, the four discharge statuses, and the three supported laboratory tests.
 
-## PATIENTRA lineage columns
+## Bronze lineage
 
-| Column | Type | Definition |
-|---|---|---|
-| `_source_system` | string | Operator-supplied organization/system label; not inferred |
-| `_source_file` | string | Input basename only; excludes workstation directory |
-| `_source_row_number` | string integer | Physical CSV record number, with header as row 1 |
-| `_source_sha256` | string | Lowercase SHA-256 of exact input bytes |
-| `_ingested_at_utc` | ISO-8601 string | One UTC timestamp shared by all rows in the run |
-| `_ingestion_run_id` | UUID string | Identifier shared by all rows in the run |
+Every accepted and structurally quarantined row has `_source_system`, `_source_file`,
+`_source_row_number`, `_source_sha256`, `_ingested_at_utc`, and
+`_ingestion_run_id`. Bronze retains source cells as strings without cleaning.
 
-Quarantine adds `_quarantine_reason`, currently one of `too_few_fields` or
-`too_many_fields`. Extra fields are not included in the rectangular quarantine CSV;
-the original raw file and row lineage remain the authoritative evidence. This avoids
-silently widening a schema while ensuring the raw delivery is retained securely.
+## Silver changes
 
-## Preservation rules
+- Patient dates become ISO dates and sex becomes `M` or `F`; names and phones are not
+  transformed or exposed outside the protected Silver CSV.
+- Admission dates become ISO dates, hospitals/statuses are canonicalized, and ICD-10
+  is normalized lexically.
+- Lab result timestamps become ISO datetimes; supported values are converted to the
+  standard project units. Original lab value/unit and the conversion label are added.
+- Bronze lineage is carried into every accepted Silver row and every rejected row.
+- Per-dataset quarantine adds `_quarantine_reason_codes`.
 
-- All source cells are strings. Leading zeros and source representations are retained.
-- Empty fields remain empty strings; Phase 1 does not equate them with null.
-- Whitespace, capitalization, codes, dates, numeric formatting, and units are not
-  normalized.
-- CSV syntax is parsed, so escaped quotes and embedded line breaks become their cell
-  content, and output quoting/line endings may differ from the source bytes.
-- Column order is preserved, followed by PATIENTRA lineage columns.
-- Reserved PATIENTRA metadata names in a source header cause a hard failure.
+See `silver.md` for the complete rule and reason-code contract.
 
-## Schema onboarding questions
+## Phase 3 identity outputs
 
-For each delivered file, obtain an owner-approved specification covering grain,
-primary/business keys, column meanings, types, null conventions, time zone, date
-formats, code systems and versions, unit systems, extract window, update/correction
-behavior, encoding, delimiter, expected counts, and reconciliation totals.
+`patient_master.csv` keeps one row per local registration:
+
+- `master_patient_id`: HMAC-derived network identity token.
+- `patient_id`, `source_system`: protected local crosswalk.
+- `link_status`: `AUTO_MATCHED`, `HUMAN_MATCHED`, `REVIEW_PENDING`,
+  `REVIEW_REJECTED`, or `UNMATCHED`.
+- `match_case_id`, `rule_version`: decision traceability.
+
+`match_decisions.csv` records accepted automatic links and completed human decisions,
+including local IDs, evidence/conflict codes, rule, reviewer metadata, and decision.
+
+`review_queue.csv` records uncertain cross-hospital pairs with protected local IDs,
+pseudonymous case IDs, evidence/conflict codes, score, rule, status, and reviewer
+fields. It does not duplicate names, phones, or dates of birth.
+
+`identity_audit.json` contains only aggregate counts, file hash/name, rule names,
+configuration fingerprints, and reconciliation flags. See `matching_strategy.md` and
+`human_oversight.md` for the governing contract.

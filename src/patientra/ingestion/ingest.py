@@ -127,7 +127,7 @@ def _atomic_csv_writer(target: Path):
         mode="w",
         encoding="utf-8",
         newline="",
-        prefix=f".{target.name}.",
+        prefix=".tmp-",
         suffix=".tmp",
         dir=target.parent,
         delete=False,
@@ -148,7 +148,7 @@ def _write_json_atomic(target: Path, payload: dict[str, object]) -> None:
     handle = tempfile.NamedTemporaryFile(
         mode="w",
         encoding="utf-8",
-        prefix=f".{target.name}.",
+        prefix=".tmp-",
         suffix=".tmp",
         dir=target.parent,
         delete=False,
