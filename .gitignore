@@ -27,6 +27,8 @@ data/silver/**
 !data/silver/.gitkeep
 data/matching/**
 !data/matching/.gitkeep
+data/gold/**
+!data/gold/.gitkeep
 data/quarantine/**
 !data/quarantine/.gitkeep
 

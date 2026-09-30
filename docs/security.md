@@ -25,6 +25,19 @@ and approval from the data owner/security team before receiving real data.
   an approved secrets manager; rotating it changes pseudonymous master/case IDs.
 - Treat `patient_master`, match decisions, and the review queue as sensitive
   crosswalks even though they do not repeat names or phone numbers.
+- Treat Gold admission and master tokens as sensitive identifiers. Keep the complete
+  feature CSV access-controlled and Git-ignored even though direct identifiers were
+  removed.
+- Share the aggregate Gold audit/evidence only after disclosure review; do not publish
+  patient-level feature rows or small-cell extracts.
+- Phase 5 suppresses any breakdown whose denominator, positive count, or negative
+  count is below the configured threshold and adds complementary suppression when a
+  single hidden category could otherwise be derived from totals.
+- Suppression reduces disclosure risk but does not prove de-identification; require
+  disclosure review before releasing analytics externally.
+- Presentation materials must use only reviewed aggregate evidence. Do not paste
+  patient-level screenshots, Gold rows, review cases, or unsuppressed small cells into
+  slides, notes, or supporting files.
 - Restrict exports and validate that temporary files inherit secure directory controls.
 
 ## Sharing and publishing

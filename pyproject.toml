@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "patientra"
-version = "0.3.0"
-description = "Governed Bronze, Silver, and patient identity resolution for PATIENTRA"
+version = "0.6.0"
+description = "Validated Bronze-to-Gold data and aggregate readmission analytics for PATIENTRA"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
@@ -15,6 +15,9 @@ patientra-ingest = "patientra.ingestion.ingest:main"
 patientra-profile = "patientra.profiling:main"
 patientra-silver = "patientra.transformations.silver:main"
 patientra-match = "patientra.matching.identity:main"
+patientra-gold = "patientra.features.gold:main"
+patientra-analytics = "patientra.analytics.readmission:main"
+patientra-validate = "patientra.validation.release:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

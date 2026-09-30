@@ -50,3 +50,48 @@ fields. It does not duplicate names, phones, or dates of birth.
 `identity_audit.json` contains only aggregate counts, file hash/name, rule names,
 configuration fingerprints, and reconciliation flags. See `matching_strategy.md` and
 `human_oversight.md` for the governing contract.
+
+## Phase 4 Gold output
+
+`readmission_features.csv` has exactly one row per accepted Silver admission. It uses
+the network `master_patient_id`, not a local patient ID. Its fields cover:
+
+- index admission context: admission/master tokens, hospital, admission/discharge
+  dates, age at admission, sex, three-character diagnosis group, discharge status,
+  and length of stay;
+- history known by the index admission: prior completed stays, prior 30/365-day stays,
+  prior same-diagnosis stays, distinct prior hospitals, and days since prior discharge;
+- index-stay glucose, haemoglobin, and creatinine count/first/latest/min/max/mean in
+  the Phase 2 standard units;
+- `readmitted_30d`, `label_status`, `observation_end_date`, and
+  `feature_rule_version`.
+
+Names, phones, local patient IDs, dates of birth, states, lab IDs, and next-admission
+details are excluded. `readmission_feature_audit.json` contains aggregate counts,
+source hashes, definitions, and privacy/scope exclusions only. See `gold.md`.
+
+## Phase 5 aggregate outputs
+
+`readmission_analytics.json` contains the eligible/excluded cohort reconciliation,
+overall admission-level readmission rate and Wilson 95% interval, and nine governed
+breakdowns. `readmission_breakdowns.csv` provides the same breakdowns in long form.
+Both contain category-level aggregates only—never admission or master identifiers.
+
+Each breakdown row contains the dimension/category, eligible/readmitted/not-readmitted
+admission counts, rate, confidence bounds, and `suppression_reason`. All metric fields
+are blank when a row is primarily or complementarily suppressed.
+
+`readmission_analytics_audit.json` records the Gold input hash, output hashes, rule
+version, release controls, aggregate row counts, and explicit privacy/scope exclusions.
+See `analytics.md`.
+
+## Phase 6 validation output
+
+`release_validation.json` contains only aggregate release evidence:
+
+- validation rule and overall `PASS` status;
+- named checks with concise, non-sensitive details;
+- Gold/eligible/excluded/breakdown/suppression reconciliation counts; and
+- verified SHA-256 hashes for Gold and the two deterministic analytics reports.
+
+It contains no patient or admission identifiers. See `validation.md`.

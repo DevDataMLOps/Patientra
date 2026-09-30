@@ -1,10 +1,14 @@
-# PATIENTRA — Trusted data and patient identity foundation
+# PATIENTRA — Trusted data and readmission feature foundation
 
 Reproducible, privacy-conscious data preparation for the fictional Lakeside Health
 Network readmission challenge. Phase 1 preserves the provider delivery in Bronze;
 Phase 2 profiles and cleans the official `patients`, `admissions`, and `lab_results`
 schemas into governed Silver tables with reason-coded quarantine. Phase 3 creates a
-conservative cross-hospital `patient_master` and protected human review queue.
+conservative cross-hospital `patient_master` and protected human review queue. Phase 4
+creates a leakage-controlled, admission-grain Gold feature table with an auditable
+30-day readmission label. Phase 5 produces disclosure-controlled aggregate readmission
+analytics with confidence intervals and small-cell suppression. Phase 6 adds an
+end-to-end release gate and an aggregate-only stakeholder presentation.
 
 > The official starter data is synthetic, but names, phone numbers, local IDs, and
 > linked records are handled as if they were patient information. Raw, Bronze, Silver,
@@ -32,9 +36,25 @@ conservative cross-hospital `patient_master` and protected human review queue.
   HMAC-derived master/case IDs, protected decision evidence, and a review queue.
 - Optional human `ACCEPT`/`REJECT`/`ABSTAIN` decisions with reviewer provenance,
   timezone validation, conflict rejection, and reversible crosswalk rebuilding.
+- One Gold row per accepted Silver admission, using the Phase 3 master identity to
+  detect readmission at either hospital from 0 through 30 days after discharge.
+- Discharge-time demographic, encounter-history, diagnosis-group, and standardized
+  laboratory summary features without names, phone numbers, local patient IDs, birth
+  dates, states, lab IDs, or next-admission details.
+- Explicit death/no-discharge exclusions and right-censoring statuses, an aggregate
+  audit with source hashes, deterministic output, atomic writes, and overwrite
+  protection.
+- Admission-level readmission rates with Wilson 95% confidence intervals across
+  hospital, sex, age, diagnosis, discharge status, utilization, length of stay, year,
+  and month.
+- Primary and complementary suppression with an explicit minimum cell size, plus
+  deterministic aggregate JSON/CSV reports that contain no admission or patient IDs.
+- A 13-check release validator covering evidence, package version, Git protections,
+  hashes, row/label reconciliation, suppression integrity, identifier exclusion, and
+  rule-version continuity.
 
-Readmission labeling, Gold features, outcome rates, and diagnosis analysis remain
-out of scope until later phases.
+Model training, patient-level risk scoring, causal inference, and clinical
+recommendations remain out of scope.
 
 ## Setup
 
@@ -102,6 +122,46 @@ The local verified run uses a randomly generated key stored only in the Git-igno
 run applied all eight queued reviews: four accepted links and four rejected links,
 with no cases left pending.
 
+## Phase 4 Gold feature engineering
+
+Use the official case-study observation end of `2025-12-31`. The command fails if an
+admission starts after that cutoff, so later evidence cannot silently influence the
+label.
+
+```powershell
+patientra-gold --patients data/silver/patients.silver.csv --admissions data/silver/admissions.silver.csv --lab-results data/silver/lab_results.silver.csv --patient-master data/matching/patient_master.csv --observation-end 2025-12-31 --output-dir data/gold
+```
+
+Use `--overwrite` only for an intentional rerun. The verified official-file run
+produced 2,938 rows: 549 positive, 2,278 negative, and 111 blank labels with explicit
+exclusion/censoring statuses. See [docs/gold.md](docs/gold.md) for the complete feature
+and label contract.
+
+## Phase 5 readmission analytics
+
+Analyze only valid Phase 4 labels and apply the default minimum cell size of 11:
+
+```powershell
+patientra-analytics --gold data/gold/readmission_features.csv --output-dir outputs/phase5 --minimum-cell-size 11
+```
+
+The verified run analyzed 2,827 eligible admissions and found 549 readmissions: an
+admission-level rate of 19.42% with a Wilson 95% interval of 18.00%–20.92%. Eight of
+51 breakdown rows were suppressed. These are descriptive associations, not causal or
+clinical conclusions. See [docs/analytics.md](docs/analytics.md).
+
+## Phase 6 validation and presentation
+
+Run the final release gate after Phases 4 and 5:
+
+```powershell
+patientra-validate --repository-root . --gold data/gold/readmission_features.csv --gold-audit data/gold/readmission_feature_audit.json --analytics-report outputs/phase5/readmission_analytics.json --analytics-breakdowns outputs/phase5/readmission_breakdowns.csv --analytics-audit outputs/phase5/readmission_analytics_audit.json --output outputs/phase6/release_validation.json
+```
+
+The verified run passes all 13 release checks and the complete 31-test suite. The
+eight-slide presentation uses aggregate evidence only, with editable native charts
+and tables. See [docs/validation.md](docs/validation.md).
+
 ## Outputs
 
 | Location | Contents | Patient-level data | Git tracked |
@@ -110,8 +170,11 @@ with no cases left pending.
 | `data/bronze/` | Raw cells plus lineage and manifests | Yes | No |
 | `data/silver/` | Clean tables, metadata-only profiles, aggregate audit | Yes in CSVs | No |
 | `data/matching/` | Patient master, decisions, review queue, aggregate audit | Yes in CSVs | No |
+| `data/gold/` | Admission features, label, and aggregate audit | Yes in CSV | No |
 | `data/quarantine/` | Rejected source rows plus reason codes and lineage | Yes | No |
 | `data/synthetic/` | Clearly synthetic development examples | No real data | Yes |
+| `outputs/phase5/` | Suppressed aggregate analytics and audit | No identifiers | No |
+| `outputs/phase6/` | Final release validation report | No identifiers | No |
 
 See [docs/silver.md](docs/silver.md) for the full rule contract and
 [docs/security.md](docs/security.md) for handling requirements. Aggregate results from

@@ -1,4 +1,4 @@
-# Bronze, Silver, and identity architecture
+# Bronze, Silver, identity, and Gold architecture
 
 ## Purpose
 
@@ -35,7 +35,16 @@ governed candidate blocking and one-to-one identity decisions
 patient_master + decision evidence <-----------+
         |
         v
-future Gold features and readmission labels
+leakage-controlled Gold features + readmission label
+        |
+        v
+suppressed aggregate readmission analytics
+        |
+        v
+release validation + aggregate stakeholder presentation
+        |
+        v
+future separately governed modeling, if approved
 ```
 
 ## Boundaries and trust
@@ -46,6 +55,9 @@ future Gold features and readmission labels
 | `data/bronze` | Parsed cells plus lineage | Yes | No |
 | `data/silver` | Standardized records plus metadata-only audit/profile | Yes in CSVs | No |
 | `data/matching` | Protected crosswalk, decisions, and review queue | Yes | No |
+| `data/gold` | Admission features, labels, and aggregate audit | Yes in CSV | No |
+| `outputs/phase5` | Suppressed aggregate analytics and audit | No direct identifiers | No |
+| `outputs/phase6` | Release validation report | No direct identifiers | No |
 | `data/quarantine` | Structurally invalid rows | Yes | No |
 | `data/synthetic` | Demonstration and development | No real data | Yes |
 | `outputs` | Approved non-sensitive deliverables only | Must not | Empty only |
@@ -87,4 +99,11 @@ networking, audit logs, versioning, retention rules, and a secrets manager.
   but does not claim clinical plausibility ranges without an approved clinical rulebook.
 - Identity resolution accepts only high-confidence one-to-one links; uncertain links
   require human review and remain separate until accepted.
-- Readmission labeling, features, and outcome analysis remain out of scope.
+- Gold labels use the explicit observation cutoff, preserve deaths/no-discharge/right-
+  censored rows with blank labels, and do not expose future admission details.
+- Phase 5 analyzes valid labels only, publishes confidence intervals, and applies
+  primary plus complementary suppression to small breakdown cells.
+- Phase 6 independently reconciles evidence, hashes, rows, labels, breakdowns,
+  suppression, identifiers, and rule versions before presentation.
+- Model training, patient-level risk scoring, causal inference, and clinical
+  recommendations remain out of scope.
