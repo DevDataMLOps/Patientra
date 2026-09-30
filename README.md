@@ -24,6 +24,21 @@
   <a href="SECURITY.md">security</a>
 </p>
 
+## Judge results
+
+<table>
+  <tr>
+    <td align="center"><strong>17.90%</strong><br>Before identity matching</td>
+    <td align="center"><strong>19.42%</strong><br>After identity matching</td>
+    <td align="center"><strong>43</strong><br>Hidden readmissions recovered</td>
+    <td align="center"><strong>I50 · 32.13%</strong><br>Highest-readmission diagnosis</td>
+  </tr>
+</table>
+
+<p align="center"><strong>304 automatic / 8 human-review matches</strong></p>
+
+<p align="center"><a href="docs/evidence/judge-results/README.md">See the aggregate-only derivation and interpretation boundary</a></p>
+
 ## Executive overview
 
 PATIENTRA turns fragmented hospital CSV deliveries into trustworthy, disclosure-controlled

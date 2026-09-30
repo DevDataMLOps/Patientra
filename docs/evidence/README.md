@@ -1,5 +1,11 @@
 # PATIENTRA phase evidence index
 
+## Judge-ready result
+
+The [Judge Results evidence](judge-results/README.md) reconciles the local-ID-only and
+master-identity readmission calculations and documents the headline diagnosis and
+matching workload without publishing identifiers.
+
 Evidence is aggregate-only and safe for repository review. Patient-level raw, Bronze,
 Silver, matching, and quarantine CSVs remain Git-ignored. Screenshots containing
 individual records are intentionally excluded.
