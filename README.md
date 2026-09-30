@@ -230,6 +230,18 @@ patientra-validate --repository-root . --gold data/gold/readmission_features.csv
 Use `--overwrite` only for an intentional rerun of derived outputs. Raw and existing
 Bronze values are never changed by downstream stages.
 
+## Phase 7 · Aggregate serving and observability (proposed extension)
+
+Phase 7 publishes **only independently validated, disclosure-controlled aggregate metrics** into a local SQLite snapshot. This is a data-serving foundation, not a public API, clinical prediction service, or full production telemetry stack.
+
+```powershell
+patientra-serve --report outputs/phase5/readmission_analytics.json --breakdowns outputs/phase5/readmission_breakdowns.csv --audit outputs/phase5/readmission_analytics_audit.json --validation outputs/phase6/release_validation.json --database outputs/phase7/patientra_serving.sqlite
+```
+
+To intentionally rebuild an existing snapshot, add `--overwrite`. The publisher rejects missing/failed release checks, changed hashes, malformed schema, mismatched row counts and leaked suppressed metrics. It uses a temporary database and atomic replacement. Query `overall`, `released_breakdowns`, and `pipeline_status` with a local SQLite client. `breakdowns` retains suppression markers and NULL metrics for internal diagnostics, so expose only `released_breakdowns` to a future unauthenticated dashboard. Freshness is measured against the Phase 5 audit timestamp (24-hour threshold) and is **not evidence of source system freshness**. The SQLite artifact stays under Git-ignored `outputs/` and must not be published as a GitHub artifact.
+
+See [Phase 7 design and limitations](docs/phase7-serving.md).
+
 ## Phase evidence matrix
 
 | Phase | Capability proved | Evidence |
