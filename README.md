@@ -17,6 +17,7 @@
 </p>
 
 <p align="center">
+  <a href="docs/solution-storyline.md"><strong>Solution Storyline</strong></a> ·
   <a href="docs/demo.md">5-minute demo</a> ·
   <a href="docs/architecture.md">architecture</a> ·
   <a href="docs/evidence/README.md">verified evidence</a> ·
