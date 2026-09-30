@@ -24,7 +24,7 @@
   <a href="SECURITY.md">security</a>
 </p>
 
-## Judge results
+## RESULTS
 
 <table>
   <tr>
