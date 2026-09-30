@@ -58,6 +58,9 @@ def verify(report_path, csv_path, audit_path, gate_path):
         raise ServingError("Phase 5 audit hashes do not match inputs")
     if report.get("analytics_rule_version") != "phase5-analytics-v1":
         raise ServingError("Wrong analytics rule version")
+    minimum = report.get("minimum_cell_size")
+    if type(minimum) is not int or minimum < 11:
+        raise ServingError("Serving requires at least 11 per released cell")
     overall = report.get("overall", {})
     breakdowns = report.get("breakdowns", {})
     cohort = report.get("cohort", {})
@@ -66,6 +69,8 @@ def verify(report_path, csv_path, audit_path, gate_path):
     for key in METRICS[:3]:
         if type(overall[key]) is not int or overall[key] < 0:
             raise ServingError("Invalid overall count")
+    if min(overall[k] for k in METRICS[:3]) < minimum:
+        raise ServingError("Overall counts are below disclosure threshold")
     if overall[METRICS[0]] != overall[METRICS[1]] + overall[METRICS[2]]:
         raise ServingError("Overall counts mismatch")
     expected = []
@@ -85,6 +90,8 @@ def verify(report_path, csv_path, audit_path, gate_path):
             if not reason and (any(type(row[k]) not in (float, int) for k in METRICS)
                                or row[METRICS[0]] != row[METRICS[1]] + row[METRICS[2]]):
                 raise ServingError("Invalid breakdown metric")
+            if not reason and any(row[k] < minimum for k in METRICS[:3]):
+                raise ServingError("Unsuppressed small cell")
             expected.append(row)
     try:
         with Path(csv_path).open(encoding="utf-8-sig", newline="") as handle:
