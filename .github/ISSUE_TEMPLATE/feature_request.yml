@@ -1,0 +1,33 @@
+name: Feature request
+description: Propose a governed enhancement to PATIENTRA.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Explain the user or governance need without including sensitive data.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed capability
+      description: Include expected inputs, outputs, controls, and acceptance criteria.
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Privacy, clinical, and compatibility risks
+      description: Explain how the proposal affects identifiers, suppression, leakage, schemas, or reproducibility.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope confirmation
+      options:
+        - label: I understand clinical prediction or patient-level scoring requires a separately approved governance phase.
+          required: true

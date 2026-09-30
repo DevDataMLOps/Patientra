@@ -21,4 +21,4 @@ comparison found zero mismatches. Phase 1 makes no clinical transformations.
 ## Reproduce
 
 Use the three `patientra-ingest` commands in the root README, then run the test suite.
-The current full suite contains 18 passing tests, including all original Bronze tests.
+The current full suite contains 31 passing tests, including all original Bronze tests.

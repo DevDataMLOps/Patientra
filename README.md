@@ -1,184 +1,266 @@
-# PATIENTRA — Trusted data and readmission feature foundation
+<p align="center">
+  <img src="docs/assets/patientra-banner.svg" alt="PATIENTRA governed healthcare data pipeline" width="100%">
+</p>
 
-Reproducible, privacy-conscious data preparation for the fictional Lakeside Health
-Network readmission challenge. Phase 1 preserves the provider delivery in Bronze;
-Phase 2 profiles and cleans the official `patients`, `admissions`, and `lab_results`
-schemas into governed Silver tables with reason-coded quarantine. Phase 3 creates a
-conservative cross-hospital `patient_master` and protected human review queue. Phase 4
-creates a leakage-controlled, admission-grain Gold feature table with an auditable
-30-day readmission label. Phase 5 produces disclosure-controlled aggregate readmission
-analytics with confidence intervals and small-cell suppression. Phase 6 adds an
-end-to-end release gate and an aggregate-only stakeholder presentation.
+<h1 align="center">PATIENTRA</h1>
 
-> The official starter data is synthetic, but names, phone numbers, local IDs, and
-> linked records are handled as if they were patient information. Raw, Bronze, Silver,
-> quarantine, and ad-hoc outputs are ignored by Git and never printed by the pipeline.
+<p align="center">
+  <strong>Privacy-conscious patient identity resolution and readmission analytics, built on a fully auditable Bronze-to-Gold data pipeline.</strong>
+</p>
 
-## What is implemented
+<p align="center">
+  <a href="https://github.com/DevDataMLOps/Patientra/actions/workflows/ci.yml"><img src="https://github.com/DevDataMLOps/Patientra/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white" alt="Python 3.11+">
+  <img src="https://img.shields.io/badge/release-v0.6.0-0F766E" alt="Release v0.6.0">
+  <img src="https://img.shields.io/badge/release_gate-13%2F13_passed-15803D" alt="13 of 13 release checks passed">
+  <img src="https://img.shields.io/badge/patient_data-not_in_Git-7C3AED" alt="Patient data is not stored in Git">
+</p>
 
-- Byte-level SHA-256 lineage, source row numbers, ingestion run IDs, metadata-only
-  manifests, structural quarantine, atomic writes, and overwrite protection in Bronze.
-- Metadata-only schema profiles: row/column counts, missing counts, distinct counts,
-  duplicate counts, and hashes, with no samples or cell values.
-- Explicit date parsing. ISO dates are accepted directly; slash dates are rejected
-  unless the operator supplies `dmy` or `mdy`.
-- Sex standardization to `M`/`F`, with numeric codes rejected unless an explicit
-  codebook is supplied.
-- ICD-10 lexical normalization: uppercase and a decimal after the first three
-  characters, without clinical recoding.
-- Project-specified unit conversions: glucose `mmol/L × 18.016`, haemoglobin
-  `g/L ÷ 10`, and creatinine `umol/L ÷ 88.4`.
-- Deterministic primary-key deduplication, referential checks, chronology checks,
-  reason-coded quarantine, and source/Silver/quarantine reconciliation.
-- Tests for conversions, ambiguous formats, duplicate/conflicting keys, quarantine,
-  schema drift, privacy-safe profiling, and the Phase 1 contract.
-- Cross-hospital candidate blocking, high-confidence one-to-one automatic links,
-  HMAC-derived master/case IDs, protected decision evidence, and a review queue.
-- Optional human `ACCEPT`/`REJECT`/`ABSTAIN` decisions with reviewer provenance,
-  timezone validation, conflict rejection, and reversible crosswalk rebuilding.
-- One Gold row per accepted Silver admission, using the Phase 3 master identity to
-  detect readmission at either hospital from 0 through 30 days after discharge.
-- Discharge-time demographic, encounter-history, diagnosis-group, and standardized
-  laboratory summary features without names, phone numbers, local patient IDs, birth
-  dates, states, lab IDs, or next-admission details.
-- Explicit death/no-discharge exclusions and right-censoring statuses, an aggregate
-  audit with source hashes, deterministic output, atomic writes, and overwrite
-  protection.
-- Admission-level readmission rates with Wilson 95% confidence intervals across
-  hospital, sex, age, diagnosis, discharge status, utilization, length of stay, year,
-  and month.
-- Primary and complementary suppression with an explicit minimum cell size, plus
-  deterministic aggregate JSON/CSV reports that contain no admission or patient IDs.
-- A 13-check release validator covering evidence, package version, Git protections,
-  hashes, row/label reconciliation, suppression integrity, identifier exclusion, and
-  rule-version continuity.
+<p align="center">
+  <a href="docs/demo.md">5-minute demo</a> ·
+  <a href="docs/architecture.md">architecture</a> ·
+  <a href="docs/evidence/README.md">verified evidence</a> ·
+  <a href="docs/presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx">presentation</a> ·
+  <a href="SECURITY.md">security</a>
+</p>
 
-Model training, patient-level risk scoring, causal inference, and clinical
-recommendations remain out of scope.
+## Executive overview
 
-## Setup
+PATIENTRA turns fragmented hospital CSV deliveries into trustworthy, disclosure-controlled
+readmission intelligence for the fictional **Lakeside Health Network** case study. The
+project preserves every source delivery, standardizes only with explicit rules, resolves
+cross-hospital identity conservatively, constructs leakage-controlled 30-day labels, and
+publishes aggregate analytics only after an independent release gate passes.
+
+This repository demonstrates a production-minded data engineering pattern—not a clinical
+prediction system. The starter data is synthetic, but all identifiers and linked records
+are handled as if they were protected health information.
+
+| Challenge | PATIENTRA control | Verified proof |
+|---|---|---|
+| Inconsistent hospital extracts | Immutable Bronze lineage and reason-coded quarantine | Source hashes and row reconciliation |
+| Ambiguous dates and coded values | Explicit operator-supplied date order and codebooks | Ambiguous values are quarantined, never guessed |
+| Duplicate identities across hospitals | Conservative one-to-one matching with human review | 304 automatic pairs and 8 reviewed cases |
+| Label leakage and incomplete follow-up | Admission-time features plus explicit observation cutoff | 2,938 Gold admissions reconciled |
+| Small-cell disclosure risk | Primary and complementary suppression | 8 of 51 breakdown rows suppressed |
+| Release drift or tampering | Independent hash, schema, count, privacy, and version checks | 13/13 release checks passed |
+
+## Verified release snapshot
+
+All figures below come from the checked-in, aggregate-only evidence chain.
+
+| Measure | Verified result |
+|---|---:|
+| Source records ingested | 2,304 patients · 3,056 admissions · 11,330 labs |
+| Silver records retained | 2,304 patients · 2,938 admissions · 10,231 labs |
+| Cross-hospital master patients | 1,996 |
+| Gold admission rows | 2,938 |
+| Eligible admissions for analytics | 2,827 |
+| 30-day readmissions | 549 |
+| Overall admission-level rate | 19.42% (Wilson 95% CI: 18.00%–20.92%) |
+| Suppressed aggregate rows | 8 of 51 |
+| Automated tests | 31 passed |
+| Independent release checks | 13 of 13 passed |
+| Identifier hits in analytics outputs | 0 |
+
+> **Interpretation boundary:** results are descriptive associations from a synthetic
+> hackathon dataset. They are not causal findings, clinical recommendations, or a
+> validated patient-risk model.
+
+## End-to-end architecture
+
+```mermaid
+flowchart LR
+    A[Secure hospital CSV delivery] --> B[Bronze<br/>immutable values + lineage]
+    B --> C[Silver<br/>standardize + validate + quarantine]
+    C --> D[Identity resolution<br/>one-to-one rules + human review]
+    D --> E[Gold<br/>admission features + 30-day label]
+    E --> F[Aggregate analytics<br/>Wilson intervals + suppression]
+    F --> G{Phase 6<br/>release gate}
+    G -->|13/13 pass| H[Stakeholder presentation]
+    G -->|any failure| I[Stop release]
+
+    B -. malformed rows .-> Q[Reason-coded quarantine]
+    C -. invalid or ambiguous .-> Q
+    D -. uncertain pair .-> R[Protected review queue]
+
+    classDef trusted fill:#DCFCE7,stroke:#15803D,color:#14532D;
+    classDef protected fill:#F3E8FF,stroke:#7C3AED,color:#581C87;
+    classDef gate fill:#DBEAFE,stroke:#2563EB,color:#1E3A8A;
+    class B,C,D,E,F trusted;
+    class Q,R protected;
+    class G,H gate;
+```
+
+### Design principles
+
+- **Fail closed:** schema drift, ambiguous formats, conflicting keys, or missing lineage
+  stop or quarantine records instead of silently coercing them.
+- **Evidence before claims:** each phase has an objective, acceptance boundary, verified
+  counts, hashes, and reproducible commands.
+- **Minimum necessary data:** direct identifiers stay out of Gold and all published
+  analytics; patient-level outputs are Git-ignored.
+- **Human accountability:** uncertain identity links require explicit
+  `ACCEPT`/`REJECT`/`ABSTAIN` decisions with reviewer provenance.
+- **Deterministic and replayable:** stable rules, atomic writes, overwrite protection,
+  hashes, and versioned audits support exact reruns.
+- **Honest scope:** the project does not claim clinical validity, causality, regulatory
+  compliance, or production readiness from code alone.
+
+## Quick start
 
 Python 3.11 or newer is required.
 
 ```powershell
+git clone https://github.com/DevDataMLOps/Patientra.git
+cd Patientra
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-pytest --basetemp=work/pytest
+python -m pytest -q --basetemp work/pytest
 ```
 
-If package installation is unavailable in an offline environment, tests still run
-from the source checkout because `tests/conftest.py` adds `src` to the import path.
+For macOS or Linux, activate with `source .venv/bin/activate`. The automated tests use
+only synthetic fixtures and do not require the protected case-study files.
 
-## End-to-end run for the official starter files
+## Pipeline commands
 
-Place the three files in `data/raw/lakeside_health_network/` using an approved secure
-copy process. Never replace an existing delivery in place; archive/version it first.
+The command-line interfaces are installed with the package:
 
-Create the aggregate-only source profile:
+| Stage | Command | Primary output |
+|---|---|---|
+| Profile | `patientra-profile` | Aggregate-only schema profile |
+| Bronze | `patientra-ingest` | Immutable source values with lineage |
+| Silver | `patientra-silver` | Standardized tables and quarantine audit |
+| Identity | `patientra-match` | Protected patient master and review queue |
+| Gold | `patientra-gold` | Admission-grain feature and label table |
+| Analytics | `patientra-analytics` | Suppressed aggregate JSON and CSV |
+| Release | `patientra-validate` | Independent release-validation report |
+
+### 1. Profile and ingest
+
+Place the three approved files under `data/raw/lakeside_health_network/`. Never replace
+an existing delivery in place.
 
 ```powershell
 patientra-profile data/raw/lakeside_health_network/patients.csv data/raw/lakeside_health_network/admissions.csv data/raw/lakeside_health_network/lab_results.csv --output data/silver/raw_schema_profile.json
-```
-
-Ingest each file without altering source values:
-
-```powershell
 patientra-ingest data/raw/lakeside_health_network/patients.csv --source-system "Lakeside Health Network"
 patientra-ingest data/raw/lakeside_health_network/admissions.csv --source-system "Lakeside Health Network"
 patientra-ingest data/raw/lakeside_health_network/lab_results.csv --source-system "Lakeside Health Network"
 ```
 
-Run Silver with explicit interpretation choices:
+### 2. Standardize to Silver
 
 ```powershell
 patientra-silver --patients data/bronze/lakeside_health_network/patients.bronze.csv --admissions data/bronze/lakeside_health_network/admissions.bronze.csv --lab-results data/bronze/lakeside_health_network/lab_results.bronze.csv --slash-date-order dmy --numeric-sex-code 1=M --numeric-sex-code 2=F
 ```
 
-For this delivery, DMY is supported by 1,879 slash dates whose first component is
-greater than 12 and zero whose second component is greater than 12. The numeric sex
-mapping is deliberately a command-line codebook rather than a hidden assumption; it
-must be confirmed with the data owner before production use. Omitting either choice
-causes affected rows to be quarantined rather than guessed.
+The DMY choice is supported by the delivered date distribution; the numeric sex mapping
+must be confirmed with the data owner. Omitting either choice quarantines affected rows.
 
-Use `--overwrite` only for an intentional rerun of derived outputs. It never changes
-the files under `data/raw/` or existing Bronze source values.
-
-## Phase 3 identity resolution
-
-Supply a stable 32-character-or-longer secret through the environment or a production
-secrets manager. Do not put the secret in command history, source control, or audit
-files.
+### 3. Resolve identity
 
 ```powershell
 $env:PATIENTRA_MATCH_KEY = "retrieve-this-from-your-approved-secret-store"
 patientra-match --patients data/silver/patients.silver.csv
 ```
 
-The local verified run uses a randomly generated key stored only in the Git-ignored
-`.env.phase3.local`. Keep the same protected key for reproducible master IDs. See
-`docs/human_oversight.md` before applying reviewer decisions. The verified Phase 3
-run applied all eight queued reviews: four accepted links and four rejected links,
-with no cases left pending.
+Use a stable secret of at least 32 characters from an approved secrets manager. Never
+commit it or place it in an audit file. Follow the protected review process in
+[`docs/human_oversight.md`](docs/human_oversight.md).
 
-## Phase 4 Gold feature engineering
-
-Use the official case-study observation end of `2025-12-31`. The command fails if an
-admission starts after that cutoff, so later evidence cannot silently influence the
-label.
+### 4. Build Gold features and labels
 
 ```powershell
 patientra-gold --patients data/silver/patients.silver.csv --admissions data/silver/admissions.silver.csv --lab-results data/silver/lab_results.silver.csv --patient-master data/matching/patient_master.csv --observation-end 2025-12-31 --output-dir data/gold
 ```
 
-Use `--overwrite` only for an intentional rerun. The verified official-file run
-produced 2,938 rows: 549 positive, 2,278 negative, and 111 blank labels with explicit
-exclusion/censoring statuses. See [docs/gold.md](docs/gold.md) for the complete feature
-and label contract.
+The observation cutoff is explicit so later events cannot silently change a label.
 
-## Phase 5 readmission analytics
-
-Analyze only valid Phase 4 labels and apply the default minimum cell size of 11:
+### 5. Produce disclosure-controlled analytics
 
 ```powershell
 patientra-analytics --gold data/gold/readmission_features.csv --output-dir outputs/phase5 --minimum-cell-size 11
 ```
 
-The verified run analyzed 2,827 eligible admissions and found 549 readmissions: an
-admission-level rate of 19.42% with a Wilson 95% interval of 18.00%–20.92%. Eight of
-51 breakdown rows were suppressed. These are descriptive associations, not causal or
-clinical conclusions. See [docs/analytics.md](docs/analytics.md).
-
-## Phase 6 validation and presentation
-
-Run the final release gate after Phases 4 and 5:
+### 6. Run the release gate
 
 ```powershell
 patientra-validate --repository-root . --gold data/gold/readmission_features.csv --gold-audit data/gold/readmission_feature_audit.json --analytics-report outputs/phase5/readmission_analytics.json --analytics-breakdowns outputs/phase5/readmission_breakdowns.csv --analytics-audit outputs/phase5/readmission_analytics_audit.json --output outputs/phase6/release_validation.json
 ```
 
-The verified run passes all 13 release checks and the complete 31-test suite. The
-eight-slide presentation uses aggregate evidence only, with editable native charts
-and tables. See [docs/validation.md](docs/validation.md).
+Use `--overwrite` only for an intentional rerun of derived outputs. Raw and existing
+Bronze values are never changed by downstream stages.
 
-## Outputs
+## Phase evidence matrix
 
-| Location | Contents | Patient-level data | Git tracked |
+| Phase | Capability proved | Evidence |
+|---|---|---|
+| 1 · Bronze | Immutable ingestion, hashes, lineage, structural quarantine | [Phase 1 evidence](docs/evidence/phase-1-bronze/README.md) |
+| 2 · Silver | Profiling, explicit standardization, conversions, deduplication | [Phase 2 evidence](docs/evidence/phase-2-silver/README.md) |
+| 3 · Identity | Conservative linkage, protected human review, reversible crosswalk | [Phase 3 evidence](docs/evidence/phase-3-identity-resolution/README.md) |
+| 4 · Gold | Leakage-controlled features and governed 30-day label | [Phase 4 evidence](docs/evidence/phase-4-gold-features/README.md) |
+| 5 · Analytics | Confidence intervals and complementary small-cell suppression | [Phase 5 evidence](docs/evidence/phase-5-readmission-analytics/README.md) |
+| 6 · Release | Cross-phase reconciliation, identifier scan, validated presentation | [Phase 6 evidence](docs/evidence/phase-6-validation-presentation/README.md) |
+
+## Data protection boundary
+
+| Location | Purpose | Patient-level data | Git tracked |
 |---|---|---:|---:|
 | `data/raw/` | Exact provider delivery | Yes | No |
-| `data/bronze/` | Raw cells plus lineage and manifests | Yes | No |
-| `data/silver/` | Clean tables, metadata-only profiles, aggregate audit | Yes in CSVs | No |
-| `data/matching/` | Patient master, decisions, review queue, aggregate audit | Yes in CSVs | No |
-| `data/gold/` | Admission features, label, and aggregate audit | Yes in CSV | No |
-| `data/quarantine/` | Rejected source rows plus reason codes and lineage | Yes | No |
-| `data/synthetic/` | Clearly synthetic development examples | No real data | Yes |
-| `outputs/phase5/` | Suppressed aggregate analytics and audit | No identifiers | No |
-| `outputs/phase6/` | Final release validation report | No identifiers | No |
+| `data/bronze/` | Source cells plus lineage | Yes | No |
+| `data/silver/` | Standardized records | Yes | No |
+| `data/matching/` | Patient master, decisions, review queue | Yes | No |
+| `data/gold/` | Admission features and labels | Yes | No |
+| `data/quarantine/` | Rejected rows and reason codes | Yes | No |
+| `outputs/phase5/` | Disclosure-controlled analytics | No direct identifiers | No |
+| `outputs/phase6/` | Release-validation report | No direct identifiers | No |
+| `docs/evidence/` | Aggregate verification evidence | No patient-level values | Yes |
 
-See [docs/silver.md](docs/silver.md) for the full rule contract and
-[docs/security.md](docs/security.md) for handling requirements. Aggregate results from
-the verified official-file run are in
-[docs/phase2-verification.md](docs/phase2-verification.md). The matching contract is in
-[docs/matching_strategy.md](docs/matching_strategy.md), and phase evidence is indexed
-under [docs/evidence](docs/evidence/README.md).
+Hashing does not automatically de-identify data. Suppression reduces disclosure risk but
+does not replace formal disclosure review. See [`SECURITY.md`](SECURITY.md) and
+[`docs/security.md`](docs/security.md).
+
+## Repository structure
+
+```text
+Patientra/
+├── .github/                 CI, issue forms, and pull-request controls
+├── data/                    Git-ignored operational zones and safe placeholders
+├── docs/                    Architecture, contracts, evidence, and demo guide
+├── src/patientra/
+│   ├── ingestion/           Bronze ingestion and lineage
+│   ├── transformations/     Silver cleaning and quarantine
+│   ├── matching/            Identity resolution and review application
+│   ├── features/            Gold features and readmission labels
+│   ├── analytics/           Aggregate rates, intervals, and suppression
+│   └── validation/          Cross-phase release gate
+├── tests/                   Synthetic, reproducible test suite
+├── CONTRIBUTING.md          Development and review expectations
+├── SECURITY.md              Private reporting and data-handling policy
+└── pyproject.toml           Package metadata and CLI entry points
+```
+
+## Documentation
+
+- [Architecture and trust boundaries](docs/architecture.md)
+- [Data dictionary](docs/data_dictionary.md)
+- [Silver rule contract](docs/silver.md)
+- [Identity matching strategy](docs/matching_strategy.md)
+- [Human review protocol](docs/human_oversight.md)
+- [Gold feature and label contract](docs/gold.md)
+- [Readmission analytics methodology](docs/analytics.md)
+- [Release-validation contract](docs/validation.md)
+- [5-minute judge/demo runbook](docs/demo.md)
+- [Phase 6 presentation](docs/presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx)
+
+## Contributing and responsible use
+
+Contributions are welcome when they preserve the privacy, auditability, and fail-closed
+contracts. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
+
+Model training, patient-level risk scoring, causal inference, clinical recommendations,
+fairness certification, and regulatory compliance are intentionally out of scope. Any
+future modeling phase requires a separate approved protocol, leakage review, subgroup
+evaluation, and clinical governance.

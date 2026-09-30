@@ -31,7 +31,7 @@ pairs were linked and four rejected pairs remain separate master identities.
 
 ## Verification evidence
 
-- The complete suite passes 18 tests.
+- The current complete suite passes 31 tests.
 - Master/case IDs are deterministic HMAC tokens when the same protected key is used.
 - Every accepted automatic link is one-to-one and every local ID appears once in the
   crosswalk.
