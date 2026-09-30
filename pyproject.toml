@@ -35,6 +35,7 @@ patientra-gold = "patientra.features.gold:main"
 patientra-analytics = "patientra.analytics.readmission:main"
 patientra-validate = "patientra.validation.release:main"
 patientra-mvp = "patientra.mvp.core:main"
+patientra-serve = "patientra.serving.store:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
