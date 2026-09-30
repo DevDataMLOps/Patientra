@@ -168,6 +168,7 @@ def publish(report_path, csv_path, audit_path, gate_path, database, *, overwrite
                           13, report["minimum_cell_size"], sha(source[0]),
                           sha(source[1]), sha(source[3])))
             conn.commit()
+        conn.close()
         os.replace(tmp, target)
     except (OSError, sqlite3.Error, KeyError) as exc:
         raise ServingError("Atomic aggregate publication failed") from exc
