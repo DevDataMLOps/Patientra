@@ -102,3 +102,98 @@ def verify(report_path, csv_path, audit_path, gate_path):
     if reconciliation.get("analytics_breakdown_rows") != len(expected) or reconciliation.get("suppressed_breakdown_rows") != sum(bool(r["suppression_reason"]) for r in expected):
         raise ServingError("Gate/breakdown mismatch")
     return report, expected, audit
+
+
+def publish(report_path, csv_path, audit_path, gate_path, database, *, overwrite=False, now=None):
+    """Atomically replace the aggregate-only serving snapshot after validation."""
+    source = [Path(p).expanduser().resolve() for p in
+              (report_path, csv_path, audit_path, gate_path)]
+    target = Path(database).expanduser().resolve()
+    if target.is_symlink() or (target.exists() and not overwrite):
+        raise ServingError("Refusing existing or symlink database without explicit overwrite")
+    report, rows, audit = verify(*source)
+    moment = now or datetime.now(timezone.utc)
+    if moment.tzinfo is None or moment.utcoffset() is None:
+        raise ServingError("Publication time must be timezone-aware")
+    try:
+        run_at = datetime.fromisoformat(audit["created_at_utc"].replace("Z", "+00:00"))
+        if run_at.utcoffset() is None:
+            raise ValueError
+    except (KeyError, ValueError, TypeError, AttributeError) as exc:
+        raise ServingError("Missing timestamp in Phase 5 audit") from exc
+    age = max(0, int((moment - run_at).total_seconds()))
+    freshness = "STALE" if age > 86400 else "FRESH"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=target.parent, prefix=".patientra-",
+                                     suffix=".sqlite", delete=False) as f:
+        tmp = Path(f.name)
+    try:
+        with sqlite3.connect(tmp) as conn:
+            conn.executescript("""
+                CREATE TABLE overall (
+                    eligible_admissions INTEGER, readmitted_admissions INTEGER,
+                    not_readmitted_admissions INTEGER, readmission_rate_pct REAL,
+                    wilson_95_lower_pct REAL, wilson_95_upper_pct REAL
+                );
+                CREATE TABLE breakdowns (
+                    dimension TEXT, category TEXT, eligible_admissions INTEGER,
+                    readmitted_admissions INTEGER, not_readmitted_admissions INTEGER,
+                    readmission_rate_pct REAL, wilson_95_lower_pct REAL,
+                    wilson_95_upper_pct REAL, suppression_reason TEXT,
+                    PRIMARY KEY (dimension, category)
+                );
+                CREATE TABLE pipeline_status (
+                    release_status TEXT, freshness_status TEXT,
+                    published_at_utc TEXT, source_run_at_utc TEXT,
+                    source_age_seconds INTEGER, gold_rows INTEGER,
+                    eligible_rows INTEGER, excluded_rows INTEGER,
+                    breakdown_rows INTEGER, suppressed_rows INTEGER,
+                    validation_checks_passed INTEGER, minimum_cell_size INTEGER,
+                    analytics_sha256 TEXT, breakdown_sha256 TEXT,
+                    gate_sha256 TEXT
+                );
+                CREATE VIEW released_breakdowns AS
+                  SELECT * FROM breakdowns WHERE suppression_reason = '';
+            """)
+            conn.execute("INSERT INTO overall VALUES (?,?,?,?,?,?)",
+                         tuple(report["overall"][k] for k in METRICS))
+            conn.executemany("INSERT INTO breakdowns VALUES (?,?,?,?,?,?,?,?,?)",
+                             [tuple(row[k] for k in FIELDS) for row in rows])
+            cohort = report["cohort"]
+            conn.execute("INSERT INTO pipeline_status VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                         ("PASS", freshness, moment.isoformat(), run_at.isoformat(),
+                          age, cohort["gold_admissions"], cohort["eligible_admissions"],
+                          cohort["excluded_admissions"], len(rows),
+                          sum(bool(row["suppression_reason"]) for row in rows),
+                          13, report["minimum_cell_size"], sha(source[0]),
+                          sha(source[1]), sha(source[3])))
+            conn.commit()
+        os.replace(tmp, target)
+    except (OSError, sqlite3.Error, KeyError) as exc:
+        raise ServingError("Atomic aggregate publication failed") from exc
+    finally:
+        tmp.unlink(missing_ok=True)
+    return {"release_status": "PASS", "freshness_status": freshness,
+            "breakdown_rows": len(rows), "database": str(target)}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="PATIENTRA Phase 7 validated aggregate serving")
+    parser.add_argument("--report", default="outputs/phase5/readmission_analytics.json")
+    parser.add_argument("--breakdowns", default="outputs/phase5/readmission_breakdowns.csv")
+    parser.add_argument("--audit", default="outputs/phase5/readmission_analytics_audit.json")
+    parser.add_argument("--validation", default="outputs/phase6/release_validation.json")
+    parser.add_argument("--database", default="outputs/phase7/patientra_serving.sqlite")
+    parser.add_argument("--overwrite", action="store_true")
+    args = parser.parse_args(argv)
+    try:
+        outcome = publish(args.report, args.breakdowns, args.audit,
+                          args.validation, args.database, overwrite=args.overwrite)
+    except ServingError as exc:
+        parser.error(str(exc))
+    print(json.dumps(outcome, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
