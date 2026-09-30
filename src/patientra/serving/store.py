@@ -44,6 +44,7 @@ def verify(report_path, csv_path, audit_path, gate_path):
     if (gate.get("status") != "PASS"
             or gate.get("validation_rule_version") != "phase6-validation-v1"
             or not isinstance(checks, list) or len(checks) != 13
+            or len({c.get("check") for c in checks if isinstance(c, dict)}) != 13
             or any(not isinstance(c, dict) or c.get("status") != "PASS" for c in checks)):
         raise ServingError("Phase 6 release gate has not passed")
     hashes = gate.get("verified_sha256", {})
@@ -108,7 +109,7 @@ def publish(report_path, csv_path, audit_path, gate_path, database, *, overwrite
     """Atomically replace the aggregate-only serving snapshot after validation."""
     source = [Path(p).expanduser().resolve() for p in
               (report_path, csv_path, audit_path, gate_path)]
-    target = Path(database).expanduser().resolve()
+    target = Path(os.path.abspath(Path(database).expanduser()))
     if target.is_symlink() or (target.exists() and not overwrite):
         raise ServingError("Refusing existing or symlink database without explicit overwrite")
     report, rows, audit = verify(*source)
