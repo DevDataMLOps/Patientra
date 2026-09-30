@@ -55,7 +55,7 @@ def _release(tmp_path):
     })
     _save_json(gate, {
         "status": "PASS", "validation_rule_version": "phase6-validation-v1",
-        "checks": [{"status": "PASS"} for _ in range(13)],
+        "checks": [{"status": "PASS", "check": f"test_{index}"} for index in range(13)],
         "verified_sha256": {
             "analytics_report": _hash(report),
             "analytics_breakdowns": _hash(breakdowns),
