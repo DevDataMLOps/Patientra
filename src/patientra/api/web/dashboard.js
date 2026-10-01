@@ -7,7 +7,7 @@
   const percent = value => Number.isFinite(value) ? `${value.toFixed(2)}%` : "Not assessed";
   const date = value => {const d = new Date(value); return Number.isNaN(d.getTime()) ? "Unavailable" : d.toISOString().replace("T"," ");};
   function message(text, error = false) { $("message").textContent = text; $("message").classList.toggle("error",error); }
-  function clear() { data = null; $("results").hidden = true; ["rows","pipeline","quality","lineage"].forEach(id => $(id).replaceChildren()); }
+  function clear() { data = null; $("results").hidden = true; ["rows","pipeline","quality","lineage"].forEach(id => $(id).replaceChildren()); ["rate","interval","eligible","excluded","readmitted","not-readmitted","patients","identity","release","checked","breakdown-count"].forEach(id => $(id).textContent=""); }
   function lock(value) {busy=value; ["connect","refresh"].forEach(id => $(id).disabled=value);}
   function forget() {generation++; controller?.abort(); controller=null; token=""; $("token").value=""; clear(); lock(false); $("connect").hidden=false; $("token").hidden=false; $("disconnect").hidden=true; $("refresh").hidden=true;}
   function list(id, entries) {$(id).replaceChildren(...entries.map(([label,value]) => {const row=document.createElement("div"),dt=document.createElement("dt"),dd=document.createElement("dd"); dt.textContent=label; dd.textContent=value; row.append(dt,dd); return row;}));}
