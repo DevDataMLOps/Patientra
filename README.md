@@ -280,7 +280,7 @@ the local release; unauthenticated requests return 401. SQLite and all patient-l
 
 ## Phase 9 dashboard
 
-The [controlled aggregate dashboard](docs/phase9-dashboard.md) adds a responsive
+The [live dashboard](https://patientra-api.onrender.com/dashboard) adds a responsive
 browser view to the existing API at `/dashboard` and `/`. Enter the API bearer
 token to load approved overall metrics, released breakdowns, pipeline freshness,
 technical quality, and provenance. Tokens remain in page memory and are cleared
@@ -301,6 +301,7 @@ See the [Phase 9 execution evidence](docs/evidence/phase-9-dashboard/README.md).
 | 6 · Release | Cross-phase reconciliation, identifier scan, validated presentation | [Phase 6 evidence](docs/evidence/phase-6-validation-presentation/README.md) |
 | 7 · Serving | Local aggregate SQLite publication and snapshot observability; unresolved identity reviews documented | [Phase 7 evidence](docs/evidence/phase-7-serving-observability/README.md) |
 | 8 · FastAPI | Authenticated aggregate endpoints, bounded queries, snapshot integrity, and safe quality/status reporting | [Phase 8 evidence](docs/evidence/phase-8-fastapi/README.md) |
+| 9 · Dashboard | Live responsive aggregate view, authenticated connection, released dimension selection, and explicit governance limitations | [Phase 9 evidence](docs/evidence/phase-9-dashboard/README.md) |
 
 ## Data protection boundary
 
