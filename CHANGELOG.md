@@ -5,6 +5,9 @@ phases rather than claiming production or clinical release readiness.
 
 ## Unreleased — Phase 9 controlled dashboard
 
+- Added an aggregate-only GitHub screenshot showcase, live dashboard/Swagger links,
+  and captions preserving unresolved reviews and reconstructed/historical distinctions.
+
 - Added a responsive same-origin dashboard for approved overall metrics, released
   breakdowns, pipeline validation/freshness, technical quality, and artifact hashes.
 - Preserved bearer authentication and suppression controls. Credentials remain in

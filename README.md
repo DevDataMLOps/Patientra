@@ -30,6 +30,19 @@
   <a href="SECURITY.md">security</a>
 </p>
 
+## Live dashboard showcase
+
+[Open the dashboard](https://patientra-api.onrender.com/dashboard) ·
+[Swagger API](https://patientra-api.onrender.com/docs) ·
+[Full screenshot showcase](docs/showcase/README.md)
+
+![PATIENTRA approved cohort overview and identity-governance warning](docs/showcase/assets/cohort-overview.png)
+
+The public deployment serves the **reconstructed** release: **548 readmissions,
+19.38%, and eight unresolved identity reviews**. Data endpoints require the existing
+bearer token. This demonstration is distinct from the historical human-reviewed
+results below and does not establish clinical accuracy or production readiness.
+
 ## RESULTS
 
 These are the three business questions the Core MVP calculates from the governed

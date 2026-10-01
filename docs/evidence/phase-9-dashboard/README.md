@@ -18,6 +18,14 @@ local. The static dashboard shell is public; data endpoints remain authenticated
 See the [dashboard contract](../../phase9-dashboard.md) and the prior
 [Phase 8 public verification](../phase-8-fastapi/public-http-verification.json).
 
+## Screenshot showcase
+
+The [public showcase](../../showcase/README.md) presents original user-supplied
+aggregate dashboard and Swagger captures with an illustrative architecture graphic.
+Screenshots supplement this execution record; they do not replace its traceable
+revision/time evidence or establish clinical validity. Freshness shown in the
+captures is the status at capture, rather than a permanent current-status claim.
+
 ## Governance limitations
 
 **Eight patient identity-review cases remain unresolved.** The local demo worksheet
