@@ -26,6 +26,9 @@ Repository = "https://github.com/DevDataMLOps/Patientra"
 Issues = "https://github.com/DevDataMLOps/Patientra/issues"
 Documentation = "https://github.com/DevDataMLOps/Patientra/tree/main/docs"
 
+[project.optional-dependencies]
+api = ["fastapi>=0.115,<1.0", "uvicorn>=0.30,<1.0", "pydantic>=2.9,<3.0"]
+
 [project.scripts]
 patientra-ingest = "patientra.ingestion.ingest:main"
 patientra-profile = "patientra.profiling:main"
@@ -36,6 +39,7 @@ patientra-analytics = "patientra.analytics.readmission:main"
 patientra-validate = "patientra.validation.release:main"
 patientra-mvp = "patientra.mvp.core:main"
 patientra-serve = "patientra.serving.store:main"
+patientra-api = "patientra.api.app:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
