@@ -166,6 +166,8 @@ The command-line interfaces are installed with the package:
 | Analytics | `patientra-analytics` | Suppressed aggregate JSON and CSV |
 | Core MVP | `patientra-mvp` | Three aggregate business answers in one JSON report |
 | Release | `patientra-validate` | Independent release-validation report |
+| Serve | `patientra-serve` | Validated aggregate SQLite snapshot |
+| API | `patientra-api` | Authenticated local aggregate HTTP endpoints |
 
 ### 1. Profile and ingest
 
@@ -250,6 +252,25 @@ reconstructed run differs from the historical human-reviewed snapshot above;
 the evidence summary explicitly identifies which observations could be independently
 corroborated and which remain operator-attested.
 
+## Phase 8 · Controlled aggregate FastAPI endpoints
+
+Phase 8 serves an operator-approved Phase 7 snapshot through bearer-authenticated,
+read-only endpoints for `overall`, unsuppressed `breakdowns`, `pipeline-status`,
+and `data-quality`. The API pins the snapshot SHA-256, checks release and disclosure
+controls on every data request, limits breakdown pages to 100 rows, and binds to
+loopback. It recomputes current analytics-run freshness separately from freshness
+at publication. No patient or arbitrary SQL endpoint is provided.
+
+Install with `python -m pip install -e ".[api]"`, configure `PATIENTRA_API_TOKEN`,
+`PATIENTRA_API_DATABASE`, and `PATIENTRA_API_SNAPSHOT_SHA256` locally, then run
+`patientra-api --port 8000`. See the [configuration and endpoint contract](docs/phase8-api.md).
+
+The [Phase 8 local execution evidence](docs/evidence/phase-8-fastapi/README.md)
+records a successful real HTTP smoke test against the historical 549-readmission
+aggregate release, including its expected `STALE` status. This does not verify the
+separate reconstructed Phase 7 run or resolve its eight identity-review cases.
+The API is locally executed and has not been publicly deployed.
+
 ## Phase evidence matrix
 
 | Phase | Capability proved | Evidence |
@@ -261,6 +282,7 @@ corroborated and which remain operator-attested.
 | 5 · Analytics | Confidence intervals and complementary small-cell suppression | [Phase 5 evidence](docs/evidence/phase-5-readmission-analytics/README.md) |
 | 6 · Release | Cross-phase reconciliation, identifier scan, validated presentation | [Phase 6 evidence](docs/evidence/phase-6-validation-presentation/README.md) |
 | 7 · Serving | Local aggregate SQLite publication and snapshot observability; unresolved identity reviews documented | [Phase 7 evidence](docs/evidence/phase-7-serving-observability/README.md) |
+| 8 · FastAPI | Authenticated aggregate endpoints, bounded queries, snapshot integrity, and safe quality/status reporting | [Phase 8 evidence](docs/evidence/phase-8-fastapi/README.md) |
 
 ## Data protection boundary
 
@@ -274,6 +296,7 @@ corroborated and which remain operator-attested.
 | `data/quarantine/` | Rejected rows and reason codes | Yes | No |
 | `outputs/phase5/` | Disclosure-controlled analytics | No direct identifiers | No |
 | `outputs/phase6/` | Release-validation report | No direct identifiers | No |
+| `outputs/phase7/` | Local aggregate SQLite snapshot | No patient-level rows | No |
 | `outputs/mvp/` | Three aggregate Core MVP answers | No direct identifiers | No |
 | `docs/evidence/` | Aggregate verification evidence | No patient-level values | Yes |
 
@@ -312,6 +335,7 @@ Patientra/
 - [Gold feature and label contract](docs/gold.md)
 - [Readmission analytics methodology](docs/analytics.md)
 - [Release-validation contract](docs/validation.md)
+- [Controlled aggregate API contract](docs/phase8-api.md)
 - [Core MVP contract](docs/core_mvp.md)
 - [5-minute judge/demo runbook](docs/demo.md)
 - [Phase 6 presentation](docs/presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx)

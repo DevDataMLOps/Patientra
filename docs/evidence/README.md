@@ -19,11 +19,14 @@ individual records are intentionally excluded.
 | 5 — Readmission analytics | `phase-5-readmission-analytics/README.md` | Complete |
 | 6 — Validation and presentation | `phase-6-validation-presentation/README.md` | Complete |
 | 7 — Serving and snapshot observability | [Phase 7 evidence](phase-7-serving-observability/README.md) | Local execution summary complete; reconstructed run operator-attested; 8 identity reviews unresolved |
+| 8 — Controlled FastAPI endpoints | [Phase 8 evidence](phase-8-fastapi/README.md) | Local HTTP execution verified against historical aggregates; 85 tests passed; no public deployment |
 
 Phases 1–6 record the historical human-reviewed release. Phase 7 documents a
 separate reconstructed local run (548 readmissions rather than the historical 549).
 Its evidence provenance and independent-verification limitations are explicit;
 the unresolved reviews do not revise the historical Phase 3 decisions.
+Phase 8's live HTTP verification uses the available historical aggregate release;
+it does not independently verify the reconstructed Phase 7 snapshot.
 
 Each completed phase records scope, inputs, controls, verified outcomes, tests, privacy
 evidence, limitations, and the gate for the next phase.

@@ -1,7 +1,19 @@
 # Changelog
 
-All notable changes to PATIENTRA are documented here. Versions follow the six project
+All notable changes to PATIENTRA are documented here. Versions follow the project
 phases rather than claiming production or clinical release readiness.
+
+## Unreleased — Phase 8 controlled aggregate API
+
+- Added optional FastAPI dependencies and a loopback-only `patientra-api` command.
+- Added bearer-authenticated, read-only aggregate, unsuppressed breakdown, pipeline
+  status, data-quality, liveness, and readiness endpoints.
+- Added operator-pinned snapshot integrity, explicit schemas, reconciliation and
+  suppression checks, bounded pagination, and sanitized error responses.
+- Separated publication freshness from current analytics-run freshness and explicitly
+  marked identity resolution and clinical accuracy as not assessed by the API.
+- Documented actual local HTTP verification against the historical aggregate release,
+  preserving the reconstructed Phase 7 governance limitation; 85 local tests passed.
 
 ## Unreleased — Phase 7 evidence documentation
 
