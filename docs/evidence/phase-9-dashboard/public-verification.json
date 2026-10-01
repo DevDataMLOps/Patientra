@@ -1,0 +1,40 @@
+{
+  "verified_at_utc": "2026-10-01T16:13:32.244211+00:00",
+  "url": "https://patientra-api.onrender.com/dashboard",
+  "deployed_commit": "51fd40f377a6a821b3d9ac4ef16f67bfc09d0ac0",
+  "checks": {
+    "/": 200,
+    "/dashboard": 200,
+    "/dashboard.css": 200,
+    "/dashboard.js": 200,
+    "/docs": 200,
+    "/openapi.json": 200,
+    "/api/v1/overall": 401,
+    "/api/v1/data-quality": 401
+  },
+  "dashboard_security_headers": "PASS",
+  "browser_verification": {
+    "headline_metrics_match_approved_bundle": true,
+    "dimension_counts_match_approved_bundle": {
+      "hospital": 2,
+      "sex": 2,
+      "age_band": 5,
+      "diagnosis_group": 6,
+      "discharge_status": 2,
+      "prior_completed_admission_band": 3,
+      "length_of_stay_band": 3,
+      "discharge_year": 2,
+      "discharge_month": 18
+    },
+    "released_rows": 43,
+    "readmissions": 548,
+    "rate_pct": 19.38,
+    "unresolved_identity_reviews": 8,
+    "invalid_token_rejected": true,
+    "refresh_successful": true,
+    "reload_clears_connection": true,
+    "disconnect_clears_token_field_and_aggregate_dom": true,
+    "mobile_390px_no_document_overflow": true,
+    "render_deployment": "dep-dav8bc6k1f9s73d7f040"
+  }
+}

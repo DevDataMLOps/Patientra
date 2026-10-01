@@ -30,6 +30,19 @@
   <a href="SECURITY.md">security</a>
 </p>
 
+## Live dashboard showcase
+
+[Open the dashboard](https://patientra-api.onrender.com/dashboard) ·
+[Swagger API](https://patientra-api.onrender.com/docs) ·
+[Full screenshot showcase](docs/showcase/README.md)
+
+![PATIENTRA approved cohort overview and identity-governance warning](docs/showcase/assets/cohort-overview.png)
+
+The public deployment serves the **reconstructed** release: **548 readmissions,
+19.38%, and eight unresolved identity reviews**. Data endpoints require the existing
+bearer token. This demonstration is distinct from the historical human-reviewed
+results below and does not establish clinical accuracy or production readiness.
+
 ## RESULTS
 
 These are the three business questions the Core MVP calculates from the governed
@@ -278,6 +291,17 @@ with bearer authentication; 104 tests pass locally and the four CI jobs pass.
 Public HTTPS verification passed: authenticated endpoints return 200 and match
 the local release; unauthenticated requests return 401. SQLite and all patient-level inputs stay local.
 
+## Phase 9 dashboard
+
+The [live dashboard](https://patientra-api.onrender.com/dashboard) adds a responsive
+browser view to the existing API at `/dashboard` and `/`. Enter the API bearer
+token to load approved overall metrics, released breakdowns, pipeline freshness,
+technical quality, and provenance. Tokens remain in page memory and are cleared
+on disconnect or reload. Eight reconstructed identity reviews remain unresolved;
+this is a demonstration, not clinical decision support.
+
+See the [Phase 9 execution evidence](docs/evidence/phase-9-dashboard/README.md).
+
 ## Phase evidence matrix
 
 | Phase | Capability proved | Evidence |
@@ -290,6 +314,7 @@ the local release; unauthenticated requests return 401. SQLite and all patient-l
 | 6 · Release | Cross-phase reconciliation, identifier scan, validated presentation | [Phase 6 evidence](docs/evidence/phase-6-validation-presentation/README.md) |
 | 7 · Serving | Local aggregate SQLite publication and snapshot observability; unresolved identity reviews documented | [Phase 7 evidence](docs/evidence/phase-7-serving-observability/README.md) |
 | 8 · FastAPI | Authenticated aggregate endpoints, bounded queries, snapshot integrity, and safe quality/status reporting | [Phase 8 evidence](docs/evidence/phase-8-fastapi/README.md) |
+| 9 · Dashboard | Live responsive aggregate view, authenticated connection, released dimension selection, and explicit governance limitations | [Phase 9 evidence](docs/evidence/phase-9-dashboard/README.md) |
 
 ## Data protection boundary
 

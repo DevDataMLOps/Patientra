@@ -46,6 +46,8 @@ def create_app(database=None, *, token=None, snapshot_sha256=None, release_bundl
                   docs_url="/docs", redoc_url=None, openapi_url="/openapi.json", redirect_slashes=False,
                   swagger_ui_parameters={"persistAuthorization": False, "validatorUrl": None})
     bearer = HTTPBearer(auto_error=False)
+    from patientra.api.dashboard import register_dashboard
+    register_dashboard(app)
 
     def authenticate(request: Request,
                      credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]):
