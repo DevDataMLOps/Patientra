@@ -271,6 +271,12 @@ aggregate release, including its expected `STALE` status. This does not verify t
 separate reconstructed Phase 7 run or resolve its eight identity-review cases.
 The API is locally executed and has not been publicly deployed.
 
+The [hosting follow-up](docs/phase8-cloud-deployment.md) independently rebuilt and
+verified the reconstructed 548-readmission release with eight pending identity
+reviews. It adds an aggregate-only Cloud Run bundle and hosted runtime; 103 tests
+pass locally. Public deployment is pending project billing enablement. SQLite and
+all patient-level inputs stay local.
+
 ## Phase evidence matrix
 
 | Phase | Capability proved | Evidence |
@@ -336,6 +342,7 @@ Patientra/
 - [Readmission analytics methodology](docs/analytics.md)
 - [Release-validation contract](docs/validation.md)
 - [Controlled aggregate API contract](docs/phase8-api.md)
+- [Aggregate-only Cloud Run deployment](docs/phase8-cloud-deployment.md)
 - [Core MVP contract](docs/core_mvp.md)
 - [5-minute judge/demo runbook](docs/demo.md)
 - [Phase 6 presentation](docs/presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx)

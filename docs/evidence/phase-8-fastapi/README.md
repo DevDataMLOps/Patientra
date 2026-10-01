@@ -108,3 +108,38 @@ per-user roles, TLS termination, production rate limiting, continuous monitoring
 or public deployment. These require separate engineering and governance approval.
 No raw datasets, patient-level CSVs, crosswalks, review queues, identifiers, matching
 secrets, API tokens, or SQLite database are included in the committed evidence.
+
+## Follow-up: independently verified reconstructed run and hosted mode
+
+A separate isolated reconstruction now verifies the operator-supplied Phase 7
+figures directly. It uses protected Silver inputs, a stable local matching key
+for this reconstruction, no supplied human-review decisions, and the existing
+observation cutoff. Historical artifacts and decisions were preserved. The
+original operator-run database remains a separate artifact; matching aggregate
+figures do not establish identical identifiers, timestamps, or hashes.
+
+| Reconstructed measure | Verified result |
+|---|---:|
+| Automatic matches / pending identity reviews | 304 / 8 |
+| Unique master patients | 2,000 |
+| Gold / eligible / excluded rows | 2,938 / 2,827 / 111 |
+| Observed 30-day readmissions / provisional rate | 548 / 19.38% |
+| Breakdown / released / suppressed rows | 51 / 43 / 8 |
+| Phase 6 release checks | 13 passed |
+| Phase 7 publication / freshness | PASS / FRESH |
+| Hosted-mode authenticated HTTP endpoints | All six returned 200 locally |
+| Missing auth / invalid query / POST / untrusted host | 401 / 422 / 405 / 400 |
+| Extended automated suite | 103 passed locally |
+
+The hosted HTTP test read only a typed, hash-pinned JSON release bundle. Suppressed
+categories, protected metrics, patient rows, and the database were not in that
+bundle. Local export checked identity-to-Gold and release lineage before including
+`reviews_unresolved`, eight unresolved reviews, and 2,000 master patients in the
+quality response. This **does not resolve the reviews** or make the reconstruction
+identical to the historical 549-readmission release.
+
+Compilation and dependency checks passed; upload inventory checks found no
+unexpected files. Deployment preflight detected disabled billing and stopped
+before changing cloud resources. **Public deployment and remote HTTPS verification
+remain pending billing enablement.** No cloud image build or container execution
+is claimed. See the [deployment contract](../../phase8-cloud-deployment.md).

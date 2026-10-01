@@ -5,6 +5,15 @@ phases rather than claiming production or clinical release readiness.
 
 ## Unreleased — Phase 8 controlled aggregate API
 
+- Independently rebuilt and verified the provisional 548-readmission reconstruction,
+  preserving eight pending identity reviews and separate historical results.
+- Added a typed hosting bundle with local identity/Gold/release lineage checks;
+  SQLite, patient rows, review queues, and matching secrets stay local.
+- Added a non-root Cloud Run container, upload allowlist, Secret Manager deployment
+  helper, host validation, and a per-process request limit.
+- Verified hosted mode over local HTTP and extended the suite to 103 passing tests.
+  Public deployment remains pending billing; no cloud build or remote HTTPS
+  execution is claimed.
 - Added optional FastAPI dependencies and a loopback-only `patientra-api` command.
 - Added bearer-authenticated, read-only aggregate, unsuppressed breakdown, pipeline
   status, data-quality, liveness, and readiness endpoints.

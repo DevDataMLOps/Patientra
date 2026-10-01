@@ -40,6 +40,8 @@ patientra-validate = "patientra.validation.release:main"
 patientra-mvp = "patientra.mvp.core:main"
 patientra-serve = "patientra.serving.store:main"
 patientra-api = "patientra.api.app:main"
+patientra-api-cloud = "patientra.api.app:cloud_main"
+patientra-export-release = "patientra.api.bundle:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

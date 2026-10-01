@@ -1,0 +1,10 @@
+# Never send operational data, SQLite, secrets, tests, or local work to Cloud Build.
+**
+!Dockerfile
+!.dockerignore
+!.gcloudignore
+!pyproject.toml
+!README.md
+!src/
+!src/**/
+!src/**/*.py

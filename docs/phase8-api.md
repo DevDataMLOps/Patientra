@@ -117,7 +117,9 @@ with an explicit `STALE` status; readiness means technically serveable, not fres
 Neither freshness field measures the age of the hospital records.
 
 Data-quality responses report `identity_resolution: not_assessed` and
-`clinical_accuracy: not_assessed`. The SQLite contract contains no identity-review
+`clinical_accuracy: not_assessed` when identity evidence is absent. Hosted release
+bundles can include checked review counts and report `reviews_unresolved` or
+`reviews_completed`; clinical accuracy remains unassessed. The SQLite contract contains no identity-review
 completion evidence; Phase 8 does not infer it from `PASS`. Source completeness,
 Silver quarantine rates, fairness, and clinical accuracy are not measured by
 these endpoints. The reconstructed Phase 7 run's eight unresolved identity-review
@@ -129,6 +131,12 @@ API. A shared bearer token does not supply per-user roles or authorization scope
 Public deployment would require separate approval, TLS, identity/access management,
 rate limits, operational monitoring, and disclosure review. No database, token,
 patient-level values, or protected review artifacts should be uploaded to GitHub.
+
+The [Cloud Run extension](phase8-cloud-deployment.md) transfers a typed unsuppressed
+JSON bundle, keeps SQLite local, and adds a non-root container, managed secret
+mounts, host validation, and a process-level request limit. Hosted application mode
+is tested locally; public deployment is pending billing enablement. The local
+`patientra-api` command remains loopback-only.
 
 See [Phase 8 execution evidence](evidence/phase-8-fastapi/README.md) for the actual
 historical-release smoke test and its distinction from the reconstructed run.
