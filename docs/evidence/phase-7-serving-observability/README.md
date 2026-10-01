@@ -145,3 +145,17 @@ approved aggregate observations and safe metadata. Resolve the eight identity
 reviews and rerun downstream validation before asserting a human-reviewed result.
 Public API or dashboard deployment requires a separate approved serving and
 disclosure review; no such deployment is claimed here.
+
+## Subsequent independent reconstruction
+
+The Phase 8 hosting follow-up rebuilt an isolated local reconstruction from the
+protected Silver inputs without applying historical human-review decisions.
+Identity, Gold, analytics, Phase 6 validation, and Phase 7 publication succeeded.
+It directly corroborated 2,000 master patients, eight pending reviews, 2,938 Gold
+rows, 2,827 eligible admissions, 111 excluded admissions, 548 readmissions, 19.38%,
+51 breakdown rows, eight suppressed rows, 13 passing checks, and a fresh publication.
+
+These are verified results of the **new reconstruction**, not a retroactive
+verification of the original operator-run database. Earlier provenance limitations
+still apply to that original artifact. Historical results remain separate, and
+**eight reviews remain unresolved**. See the [Phase 8 follow-up](../phase-8-fastapi/README.md).

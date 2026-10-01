@@ -1,0 +1,15 @@
+# Allow only application source and package metadata into the build context.
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!README.md
+!src/
+!src/**
+**/__pycache__/
+**/*.pyc
+**/*.csv
+**/*.sqlite
+**/*.json
+**/*.key
+**/.env*

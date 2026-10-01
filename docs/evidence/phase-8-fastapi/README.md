@@ -3,9 +3,10 @@
 ## Objective and acceptance boundary
 
 Expose approved aggregate analytics, pipeline status, and technical data-quality
-metrics through an authenticated, read-only local FastAPI service. Phase 8 must
-preserve suppression and the Phase 7 publication boundary without reading or
-exposing patient-level inputs. No public deployment or clinical service is claimed.
+metrics through an authenticated, read-only FastAPI service while preserving
+suppression and the Phase 7 release boundary. The original execution below was
+local and used historical aggregates. The public deployment follow-up at the end
+records the reconstructed release on Render. No production clinical service is claimed.
 
 ## Execution provenance
 
@@ -71,7 +72,7 @@ before deserializing them into a private read-only in-memory connection. Missing
 changed, malformed, corrupt, or failed-release snapshots return generic 503 errors.
 Fixed schemas, explicit field projections, suppression checks, and response models
 restrict the serving surface. There are no arbitrary SQL, patient, write, category
-filter, joined filter, unauthenticated schema, or public-host endpoints.
+filter, joined filter, or unauthenticated schema endpoints.
 
 See [the Phase 8 contract and reproduction commands](../../phase8-api.md).
 
@@ -96,15 +97,105 @@ This execution's 549 readmissions and 19.42% rate belong to the historical relea
 They do not independently verify, replace, or equate to the reconstructed Phase 7
 run's 548 readmissions, 19.38% rate, and 2,000 master patients.
 **Eight patient identity-review cases remain unresolved in that reconstructed run.**
-Its database and audits were unavailable for independent verification here.
+Its original database and audits were unavailable during the historical smoke test;
+the separate reconstruction verified later is documented below.
 
 `PASS` denotes the implemented technical release checks, not clinical accuracy or
 complete identity resolution. Freshness measures analytics-run age, not hospital
 record freshness. Data-quality endpoints do not measure source completeness,
 quarantine rates, clinical validity, or identity-review completion.
 
-The service uses one shared bearer credential and local loopback HTTP. It has no
-per-user roles, TLS termination, production rate limiting, continuous monitoring,
-or public deployment. These require separate engineering and governance approval.
+The original local execution used one shared bearer credential and loopback HTTP.
+The subsequent Render deployment adds managed HTTPS and a process-level rate
+limit; it does not add per-user roles, distributed quotas, clinical validation,
+or continuous operational monitoring.
 No raw datasets, patient-level CSVs, crosswalks, review queues, identifiers, matching
 secrets, API tokens, or SQLite database are included in the committed evidence.
+
+## Follow-up: independently verified reconstructed run and hosted mode
+
+A separate isolated reconstruction now verifies the operator-supplied Phase 7
+figures directly. It uses protected Silver inputs, a stable local matching key
+for this reconstruction, no supplied human-review decisions, and the existing
+observation cutoff. Historical artifacts and decisions were preserved. The
+original operator-run database remains a separate artifact; matching aggregate
+figures do not establish identical identifiers, timestamps, or hashes.
+
+| Reconstructed measure | Verified result |
+|---|---:|
+| Automatic matches / pending identity reviews | 304 / 8 |
+| Unique master patients | 2,000 |
+| Gold / eligible / excluded rows | 2,938 / 2,827 / 111 |
+| Observed 30-day readmissions / provisional rate | 548 / 19.38% |
+| Breakdown / released / suppressed rows | 51 / 43 / 8 |
+| Phase 6 release checks | 13 passed |
+| Phase 7 publication / freshness | PASS / FRESH |
+| Hosted-mode authenticated HTTP endpoints | All six returned 200 locally |
+| Missing auth / invalid query / POST / untrusted host | 401 / 422 / 405 / 400 |
+| Extended automated suite | 103 passed locally |
+
+The hosted HTTP test read only a typed, hash-pinned JSON release bundle. Suppressed
+categories, protected metrics, patient rows, and the database were not in that
+bundle. Local export checked identity-to-Gold and release lineage before including
+`reviews_unresolved`, eight unresolved reviews, and 2,000 master patients in the
+quality response. This **does not resolve the reviews** or make the reconstruction
+identical to the historical 549-readmission release.
+
+Compilation and dependency checks passed; upload inventory checks found no
+unexpected files. The Google Cloud deployment preflight detected disabled billing and stopped
+before changing resources. At that stage, public deployment was pending. The
+subsequent Render deployment is recorded below; no Cloud Run image build or
+container execution is claimed. See the [deployment contract](../../phase8-cloud-deployment.md).
+
+## Public deployment follow-up: Render
+
+After the Google Cloud billing preflight, the user selected another provider.
+Render built and installed the Python package successfully and reports the native
+Python web service as live at https://patientra-api.onrender.com. The deployed
+revision is `c019980533f3f6f7b026b214cc915ad36e0f4963`.
+
+The first startup rejected an invalid token configuration. A provider-generated
+secret corrected that configuration; the subsequent environment deployment is
+live. Public HTTPS `/health` returned 401 with `Authentication required` without
+credentials. Authenticated readiness and all aggregate endpoints returned 200
+and matched the approved local release. Invalid queries returned 422, POST returned
+405, and schema/documentation routes returned 404.
+
+The Render hostname test raises the complete local suite to **104 passed**, with
+one upstream Starlette/HTTPX deprecation warning. All four GitHub Actions jobs
+(Windows/Linux, Python 3.11/3.12) passed for the deployed revision.
+
+Only the typed, unsuppressed aggregate bundle is privately mounted by Render;
+patient-level files, matching secrets, identity reviews, and SQLite remain local.
+**Eight identity-review cases remain unresolved.** The reconstruction remains
+548 readmissions (19.38%), distinct from historical 549 (19.42%). `PASS` is a
+technical release check; `FRESH` measures analytics recency. Neither establishes
+clinical accuracy. The free instance sleeps when idle and is not a production
+clinical service. See the [deployment contract](../../phase8-cloud-deployment.md).
+
+### Verified public response summary
+
+| Public HTTPS check | Observed result |
+|---|---:|
+| Authenticated liveness, readiness, and four aggregate endpoints | All six HTTP 200 |
+| Missing authentication on those routes / invalid token | HTTP 401 |
+| Overall response and 43 released breakdown rows | Match approved local bundle |
+| Pipeline release metadata and artifact hashes | Match approved local bundle |
+| Gold / eligible / excluded rows | 2,938 / 2,827 / 111 |
+| Readmissions / provisional rate | 548 / 19.38% |
+| Breakdown / released / suppressed rows | 51 / 43 / 8 |
+| Unresolved reviews / master patients | 8 / 2,000 |
+| Technical release / checks passed | PASS / 13 |
+| Publication / current freshness at verification | FRESH / FRESH |
+| Invalid query / POST / schema routes | 422 / 405 / 404 |
+| Cache-Control / X-Content-Type-Options | no-store / nosniff |
+
+The [safe machine-readable HTTP record](public-http-verification.json) preserves
+the actual verification time, aggregate outcomes, and deployed code revision.
+Render's editor removed the bundle's final newline; the mounted bytes were
+independently checked and the exact provider digest was pinned. Neither identity
+reviews nor historical results were changed. Protected local artifacts stayed
+local; the public repository's pre-existing synthetic starter/test data is removed
+from the final runtime build. Temporary diagnostics are removed from the normal
+start command. Cloud Run deployment, Docker execution, production load testing,
+per-user authorization, and clinical validation remain unverified.

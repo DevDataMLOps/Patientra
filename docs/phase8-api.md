@@ -117,18 +117,28 @@ with an explicit `STALE` status; readiness means technically serveable, not fres
 Neither freshness field measures the age of the hospital records.
 
 Data-quality responses report `identity_resolution: not_assessed` and
-`clinical_accuracy: not_assessed`. The SQLite contract contains no identity-review
+`clinical_accuracy: not_assessed` when identity evidence is absent. Hosted release
+bundles can include checked review counts and report `reviews_unresolved` or
+`reviews_completed`; clinical accuracy remains unassessed. The SQLite contract contains no identity-review
 completion evidence; Phase 8 does not infer it from `PASS`. Source completeness,
 Silver quarantine rates, fairness, and clinical accuracy are not measured by
 these endpoints. The reconstructed Phase 7 run's eight unresolved identity-review
 cases remain a governance limitation, documented in its
 [evidence summary](evidence/phase-7-serving-observability/README.md).
 
-This is a locally executed service, not a publicly deployed or production clinical
-API. A shared bearer token does not supply per-user roles or authorization scopes.
-Public deployment would require separate approval, TLS, identity/access management,
-rate limits, operational monitoring, and disclosure review. No database, token,
-patient-level values, or protected review artifacts should be uploaded to GitHub.
+The local CLI binds to loopback. The separate hosted entry point is now deployed
+on Render with managed HTTPS, bearer authentication, exact hostname checks, and
+60 authenticated requests per minute per process. A shared credential does not
+provide per-user roles or scopes. This is not a production clinical API. No
+patient-level values, SQLite database, token, or protected review artifacts are
+uploaded to GitHub.
+
+The [public deployment contract](phase8-cloud-deployment.md) transfers a typed
+unsuppressed JSON bundle through a private provider secret file and keeps SQLite
+local. Optional non-root container and Cloud Run tooling remains available but
+was not used for this native Python deployment. Public HTTPS readiness
+and authenticated aggregate responses are verified against the approved local
+release; unauthenticated requests return 401.
 
 See [Phase 8 execution evidence](evidence/phase-8-fastapi/README.md) for the actual
 historical-release smoke test and its distinction from the reconstructed run.

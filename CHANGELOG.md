@@ -5,6 +5,18 @@ phases rather than claiming production or clinical release readiness.
 
 ## Unreleased — Phase 8 controlled aggregate API
 
+- Independently rebuilt and verified the provisional 548-readmission reconstruction,
+  preserving eight pending identity reviews and separate historical results.
+- Added a typed hosting bundle with local identity/Gold/release lineage checks;
+  SQLite, patient rows, review queues, and matching secrets stay local.
+- Added a non-root Cloud Run container, upload allowlist, Secret Manager deployment
+  helper, host validation, and a per-process request limit.
+- Verified hosted mode over local HTTP; 104 local tests and all four CI jobs pass.
+- Deployed the aggregate-only API on Render's free native Python service with a
+  private approved bundle, managed HTTPS, bearer authentication, exact hostname
+  checks, and manual deployments. Authenticated public HTTPS readiness and all
+  aggregate responses were verified against the local release; unauthenticated
+  requests return 401. Cloud Run was not deployed.
 - Added optional FastAPI dependencies and a loopback-only `patientra-api` command.
 - Added bearer-authenticated, read-only aggregate, unsuppressed breakdown, pipeline
   status, data-quality, liveness, and readiness endpoints.
