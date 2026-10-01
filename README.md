@@ -278,6 +278,17 @@ with bearer authentication; 104 tests pass locally and the four CI jobs pass.
 Public HTTPS verification passed: authenticated endpoints return 200 and match
 the local release; unauthenticated requests return 401. SQLite and all patient-level inputs stay local.
 
+## Phase 9 dashboard
+
+The [controlled aggregate dashboard](docs/phase9-dashboard.md) adds a responsive
+browser view to the existing API at `/dashboard` and `/`. Enter the API bearer
+token to load approved overall metrics, released breakdowns, pipeline freshness,
+technical quality, and provenance. Tokens remain in page memory and are cleared
+on disconnect or reload. Eight reconstructed identity reviews remain unresolved;
+this is a demonstration, not clinical decision support.
+
+See the [Phase 9 execution evidence](docs/evidence/phase-9-dashboard/README.md).
+
 ## Phase evidence matrix
 
 | Phase | Capability proved | Evidence |

@@ -3,7 +3,17 @@
 All notable changes to PATIENTRA are documented here. Versions follow the project
 phases rather than claiming production or clinical release readiness.
 
-## Unreleased — Phase 8 controlled aggregate API
+## Unreleased — Phase 9 controlled dashboard
+
+- Added a responsive same-origin dashboard for approved overall metrics, released
+  breakdowns, pipeline validation/freshness, technical quality, and artifact hashes.
+- Preserved bearer authentication and suppression controls. Credentials remain in
+  page memory; failures/disconnect clear results. A restrictive CSP, safe text
+  rendering, bounded pagination, and release consistency checks protect the view.
+- Documented eight unresolved identity reviews and separate reconstructed/historical
+  releases. Added dashboard security/delivery tests; the local suite passes 105 tests.
+
+## Phase 8 controlled aggregate API
 
 - Enabled interactive Swagger at `/docs` and the public schema at `/openapi.json`;
   aggregate and health routes retain bearer authentication. Browser credentials

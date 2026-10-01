@@ -21,6 +21,9 @@ individual records are intentionally excluded.
 | 7 — Serving and snapshot observability | [Phase 7 evidence](phase-7-serving-observability/README.md) | Original run operator-attested; subsequent reconstruction verified; 8 reviews unresolved |
 | 8 — Controlled FastAPI endpoints | [Phase 8 evidence](phase-8-fastapi/README.md) | Historical and reconstructed local HTTP execution verified; 104 tests passed; Render public HTTPS aggregates verified; 8 identity reviews unresolved |
 
+Phase 9: [Controlled dashboard evidence](phase-9-dashboard/README.md) records the
+same-origin authenticated aggregate browser view and its verification.
+
 Phases 1–6 record the historical human-reviewed release. Phase 7 documents a
 separate reconstructed local run (548 readmissions rather than the historical 549).
 Its evidence provenance and independent-verification limitations are explicit;
