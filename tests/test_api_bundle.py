@@ -155,6 +155,25 @@ def test_cloud_entrypoint_refuses_sqlite_only_configuration(monkeypatch):
         cloud_main()
 
 
+def test_render_host_is_exact_and_other_provider_hosts_are_rejected(release, monkeypatch):
+    import uvicorn
+    _, bundle, digest = release
+    monkeypatch.setenv("PATIENTRA_API_RELEASE_BUNDLE", str(bundle))
+    monkeypatch.setenv("PATIENTRA_API_BUNDLE_SHA256", digest)
+    monkeypatch.setenv("PATIENTRA_API_TOKEN", TOKEN)
+    monkeypatch.setenv("RENDER_EXTERNAL_HOSTNAME", "patientra-api.onrender.com")
+    calls = []
+    monkeypatch.setattr(uvicorn, "run", lambda app, **kwargs: calls.append(app))
+    assert cloud_main() == 0
+    client = TestClient(calls[0], base_url="https://patientra-api.onrender.com")
+    assert client.get("/ready", headers=AUTH).status_code == 200
+    for host in ("other.onrender.com", "other.run.app", "untrusted.example"):
+        assert client.get("/ready", headers={**AUTH, "Host": host}).status_code == 400
+    monkeypatch.setenv("RENDER_EXTERNAL_HOSTNAME", "*")
+    with pytest.raises(SystemExit, match="Invalid Render hostname"):
+        cloud_main()
+
+
 def test_ambiguous_release_sources_are_rejected(release):
     args, bundle, digest = release
     with pytest.raises(ValueError):

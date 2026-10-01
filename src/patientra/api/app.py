@@ -138,7 +138,14 @@ def cloud_main():
     except ValueError:
         raise SystemExit("Invalid hosted API configuration") from None
     from starlette.middleware.trustedhost import TrustedHostMiddleware
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*.run.app", "localhost", "127.0.0.1"])
+    allowed_hosts = ["*.run.app", "localhost", "127.0.0.1"]
+    render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+    if render_host:
+        import re
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*\.onrender\.com", render_host):
+            raise SystemExit("Invalid Render hostname")
+        allowed_hosts = [render_host, "localhost", "127.0.0.1"]
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=port, access_log=False, proxy_headers=False,
                 server_header=False, limit_concurrency=20)
