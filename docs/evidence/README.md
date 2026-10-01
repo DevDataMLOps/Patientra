@@ -19,7 +19,7 @@ individual records are intentionally excluded.
 | 5 — Readmission analytics | `phase-5-readmission-analytics/README.md` | Complete |
 | 6 — Validation and presentation | `phase-6-validation-presentation/README.md` | Complete |
 | 7 — Serving and snapshot observability | [Phase 7 evidence](phase-7-serving-observability/README.md) | Original run operator-attested; subsequent reconstruction verified; 8 reviews unresolved |
-| 8 — Controlled FastAPI endpoints | [Phase 8 evidence](phase-8-fastapi/README.md) | Historical and reconstructed local HTTP execution verified; 103 tests passed; public deployment pending billing |
+| 8 — Controlled FastAPI endpoints | [Phase 8 evidence](phase-8-fastapi/README.md) | Historical and reconstructed local HTTP execution verified; 104 tests passed; Render public HTTPS aggregates verified; 8 identity reviews unresolved |
 
 Phases 1–6 record the historical human-reviewed release. Phase 7 documents a
 separate reconstructed local run (548 readmissions rather than the historical 549).

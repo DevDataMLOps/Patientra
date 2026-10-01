@@ -269,13 +269,14 @@ The [Phase 8 local execution evidence](docs/evidence/phase-8-fastapi/README.md)
 records a successful real HTTP smoke test against the historical 549-readmission
 aggregate release, including its expected `STALE` status. This does not verify the
 separate reconstructed Phase 7 run or resolve its eight identity-review cases.
-The API is locally executed and has not been publicly deployed.
+That original smoke test was local; the subsequent public deployment is described below.
 
 The [hosting follow-up](docs/phase8-cloud-deployment.md) independently rebuilt and
 verified the reconstructed 548-readmission release with eight pending identity
-reviews. It adds an aggregate-only Cloud Run bundle and hosted runtime; 103 tests
-pass locally. Public deployment is pending project billing enablement. SQLite and
-all patient-level inputs stay local.
+reviews. The aggregate-only FastAPI is now live on [Render](https://patientra-api.onrender.com)
+with bearer authentication; 104 tests pass locally and the four CI jobs pass.
+Public HTTPS verification passed: authenticated endpoints return 200 and match
+the local release; unauthenticated requests return 401. SQLite and all patient-level inputs stay local.
 
 ## Phase evidence matrix
 
@@ -342,7 +343,7 @@ Patientra/
 - [Readmission analytics methodology](docs/analytics.md)
 - [Release-validation contract](docs/validation.md)
 - [Controlled aggregate API contract](docs/phase8-api.md)
-- [Aggregate-only Cloud Run deployment](docs/phase8-cloud-deployment.md)
+- [Aggregate-only public deployment](docs/phase8-cloud-deployment.md)
 - [Core MVP contract](docs/core_mvp.md)
 - [5-minute judge/demo runbook](docs/demo.md)
 - [Phase 6 presentation](docs/presentation/PATIENTRA_Phase6_Validation_Presentation_Final.pptx)
