@@ -41,7 +41,10 @@ def create_app(database=None, *, token=None, snapshot_sha256=None, release_bundl
     requests = deque()
     rate_lock = threading.Lock()
     app = FastAPI(title="PATIENTRA aggregate API", version="phase8-api-v1",
-                  docs_url=None, redoc_url=None, openapi_url=None, redirect_slashes=False)
+                  description="Approved aggregate demonstration API. Use Authorize with your bearer token. "
+                  "Eight reconstructed identity reviews remain unresolved; clinical accuracy is not assessed.",
+                  docs_url="/docs", redoc_url=None, openapi_url="/openapi.json", redirect_slashes=False,
+                  swagger_ui_parameters={"persistAuthorization": False, "validatorUrl": None})
     bearer = HTTPBearer(auto_error=False)
 
     def authenticate(request: Request,

@@ -91,9 +91,28 @@ def test_non_breakdown_routes_reject_queries(database):
     assert _client(database).get("/health?token=unapproved", headers=AUTH).status_code == 422
 
 
-@pytest.mark.parametrize("path", ["/docs", "/redoc", "/openapi.json", "/api/v1/breakdowns/", "/api/v1/patients"])
+@pytest.mark.parametrize("path", ["/redoc", "/api/v1/breakdowns/", "/api/v1/patients"])
 def test_no_extra_query_surfaces(database, path):
     assert _client(database).get(path, headers=AUTH).status_code == 404
+
+
+def test_swagger_exposes_contract_without_release_data_or_credentials(database):
+    client = _client(database)
+    docs = client.get("/docs")
+    assert docs.status_code == 200
+    assert '"persistAuthorization": false' in docs.text
+    assert '"validatorUrl": null' in docs.text
+    schema_response = client.get("/openapi.json")
+    assert schema_response.status_code == 200
+    schema = schema_response.json()
+    assert set(schema["paths"]) == set(ENDPOINTS)
+    assert schema["components"]["securitySchemes"]["HTTPBearer"]["scheme"] == "bearer"
+    for path in ENDPOINTS:
+        assert schema["paths"][path]["get"]["security"] == [{"HTTPBearer": []}]
+        assert client.get(path).status_code == 401
+    assert TOKEN not in docs.text + schema_response.text
+    assert str(database) not in docs.text + schema_response.text
+    assert docs.headers["Cache-Control"] == "no-store"
 
 
 def test_missing_and_replaced_snapshots_fail_closed(database):
