@@ -3,6 +3,17 @@
 All notable changes to PATIENTRA are documented here. Versions follow the six project
 phases rather than claiming production or clinical release readiness.
 
+## Unreleased — Phase 7 evidence documentation
+
+- Added an aggregate-only local SQLite execution evidence summary covering reported
+  publication, queries, validation, snapshot freshness, and serving responsibilities.
+- Recorded the reconstructed 548-readmission result and eight unresolved identity
+  reviews separately from the historical human-reviewed 549-readmission release.
+- Distinguished corroborated historical audit counts from operator-attested Phase 7
+  observations; documented technical `PASS` and publication-time `FRESH` limitations.
+- Linked Phase 7 from the evidence index and repository README without publishing
+  protected data or the serving database.
+
 ## 0.6.1 — Core MVP decision summary
 
 - Added a reproducible aggregate-only command for the three headline business answers.

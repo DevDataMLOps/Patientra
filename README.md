@@ -230,7 +230,7 @@ patientra-validate --repository-root . --gold data/gold/readmission_features.csv
 Use `--overwrite` only for an intentional rerun of derived outputs. Raw and existing
 Bronze values are never changed by downstream stages.
 
-## Phase 7 · Aggregate serving and observability (proposed extension)
+## Phase 7 · Aggregate serving and observability (local execution evidence)
 
 Phase 7 publishes **only independently validated, disclosure-controlled aggregate metrics** into a local SQLite snapshot. This is a data-serving foundation, not a public API, clinical prediction service, or full production telemetry stack.
 
@@ -242,6 +242,14 @@ To intentionally rebuild an existing snapshot, add `--overwrite`. The publisher 
 
 See [Phase 7 design and limitations](docs/phase7-serving.md).
 
+The [completed Phase 7 local execution evidence summary](docs/evidence/phase-7-serving-observability/README.md)
+records the operator-reported successful SQLite publication and queries: 548
+readmissions among 2,827 eligible admissions (19.38%), with `PASS` and publication-time
+`FRESH` status. **Eight patient identity-review cases remain unresolved.** This
+reconstructed run differs from the historical human-reviewed snapshot above;
+the evidence summary explicitly identifies which observations could be independently
+corroborated and which remain operator-attested.
+
 ## Phase evidence matrix
 
 | Phase | Capability proved | Evidence |
@@ -252,6 +260,7 @@ See [Phase 7 design and limitations](docs/phase7-serving.md).
 | 4 · Gold | Leakage-controlled features and governed 30-day label | [Phase 4 evidence](docs/evidence/phase-4-gold-features/README.md) |
 | 5 · Analytics | Confidence intervals and complementary small-cell suppression | [Phase 5 evidence](docs/evidence/phase-5-readmission-analytics/README.md) |
 | 6 · Release | Cross-phase reconciliation, identifier scan, validated presentation | [Phase 6 evidence](docs/evidence/phase-6-validation-presentation/README.md) |
+| 7 · Serving | Local aggregate SQLite publication and snapshot observability; unresolved identity reviews documented | [Phase 7 evidence](docs/evidence/phase-7-serving-observability/README.md) |
 
 ## Data protection boundary
 
