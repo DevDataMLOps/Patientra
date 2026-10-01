@@ -63,7 +63,12 @@ and configured; the API never silently trusts the new file.
 
 All implemented endpoints require `Authorization: Bearer <token>`. There are no
 write, arbitrary SQL, database-path, patient, category-filter, or joined-filter
-endpoints. Interactive docs and the OpenAPI HTTP endpoint are disabled. CORS is
+endpoints. Interactive Swagger is available at `/docs`, with its public API contract
+at `/openapi.json`. Click **Authorize**, enter the existing bearer token without
+the `Bearer` prefix, then use **Try it out** and **Execute**. Documentation contains
+schemas rather than release data; every data endpoint remains authenticated.
+Authorization is not persisted across reloads and external schema validation is
+disabled. ReDoc remains disabled. CORS is
 not enabled. Responses use `Cache-Control: no-store` and `X-Content-Type-Options: nosniff`.
 
 | GET endpoint | Response |

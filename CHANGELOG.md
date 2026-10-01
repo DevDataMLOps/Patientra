@@ -5,6 +5,12 @@ phases rather than claiming production or clinical release readiness.
 
 ## Unreleased — Phase 8 controlled aggregate API
 
+- Enabled interactive Swagger at `/docs` and the public schema at `/openapi.json`;
+  aggregate and health routes retain bearer authentication. Browser credentials
+  are not persisted and external schema validation is disabled. The updated suite
+  passes 103 tests (two obsolete disabled-documentation cases removed, one
+  security-contract test added).
+
 - Independently rebuilt and verified the provisional 548-readmission reconstruction,
   preserving eight pending identity reviews and separate historical results.
 - Added a typed hosting bundle with local identity/Gold/release lineage checks;
