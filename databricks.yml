@@ -1,0 +1,90 @@
+bundle:
+  name: patientra-medallion
+
+variables:
+  catalog:
+    default: patientra_dev
+  maintainer:
+    default: maniapallets@gmail.com
+  source_commit:
+    description: Full reviewed Git commit SHA; supplied by the release workflow
+  observation_end:
+    description: Approved end date of the delivered observation window
+  cutoff:
+    default: '2025-01-01'
+  raw_dir:
+    description: Protected canonical delivery directory
+    default: /Volumes/patientra/bronze/raw
+  demo:
+    default: 'true'
+  secret_scope:
+    default: patientra
+  secret_key:
+    default: matching-hmac
+
+sync:
+  include:
+    - src/patientra/**
+    - notebooks/**
+    - scripts/generate_databricks_demo.py
+    - docs/evidence/**/README.md
+    - pyproject.toml
+    - .gitignore
+  exclude:
+    - data/**
+    - outputs/**
+    - work/**
+    - .venv/**
+    - .env*
+    - '**/__pycache__/**'
+
+resources:
+  jobs:
+    medallion:
+      name: patientra-medallion-${bundle.target}
+      max_concurrent_runs: 1
+      timeout_seconds: 3600
+      tasks:
+        - task_key: validated_medallion_and_ml
+          notebook_task:
+            notebook_path: ./notebooks/medallion.py
+            base_parameters:
+              repository_root: ${workspace.file_path}
+              catalog: ${var.catalog}
+              source_commit: ${var.source_commit}
+              observation_end: ${var.observation_end}
+              cutoff: ${var.cutoff}
+              raw_dir: ${var.raw_dir}
+              demo: ${var.demo}
+              secret_scope: ${var.secret_scope}
+              secret_key: ${var.secret_key}
+              experiment_path: ${workspace.root_path}/phase10
+          max_retries: 0
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: https://dbc-c4f30ab9-7317.cloud.databricks.com
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/dev
+    run_as:
+      user_name: ${var.maintainer}
+    permissions:
+      - user_name: ${var.maintainer}
+        level: CAN_MANAGE
+  prod:
+    mode: production
+    git:
+      branch: main
+    variables:
+      catalog: patientra
+      demo: 'false'
+    workspace:
+      host: https://dbc-c4f30ab9-7317.cloud.databricks.com
+      root_path: /Workspace/Patientra/production
+    run_as:
+      user_name: ${var.maintainer}
+    permissions:
+      - user_name: ${var.maintainer}
+        level: CAN_MANAGE
