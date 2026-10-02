@@ -47,6 +47,7 @@ patientra-ml = "patientra.ml.readmission:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["patientra*"]
 
 [tool.setuptools.package-data]
 "patientra.api" = ["web/*.html", "web/*.css", "web/*.js"]

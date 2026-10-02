@@ -390,3 +390,11 @@ Model training, patient-level risk scoring, causal inference, clinical recommend
 fairness certification, and regulatory compliance are intentionally out of scope. Any
 future modeling phase requires a separate approved protocol, leakage review, subgroup
 evaluation, and clinical governance.
+
+## Canonical Databricks integration
+
+See [Databricks execution](docs/databricks.md) for the bounded Medallion batch,
+immutable Delta snapshots, validation gates, and Phase 10 aggregate MLflow
+integration. [Governance](docs/governance.md) defines maintainer authority and
+contributor permissions. Platform execution remains subject to verified workspace
+access and a successful canonical run.

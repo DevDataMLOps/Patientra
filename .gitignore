@@ -42,3 +42,8 @@ Thumbs.db
 .idea/
 .vscode/
 work/
+
+# Bundle deployment state and build artifacts
+.databricks/
+dist/
+build/

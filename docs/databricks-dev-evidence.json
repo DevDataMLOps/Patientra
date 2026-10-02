@@ -1,0 +1,21 @@
+{
+  "evidence_source": "Maintainer-supplied Databricks screenshots and final notebook exit JSON; not an independent agent API read",
+  "observed_date": "2026-10-02",
+  "source_commit": "61e71e0374096cf47a424d55cb0a32b78e87b6ab",
+  "workspace": "https://dbc-c4f30ab9-7317.cloud.databricks.com",
+  "job_id": "115923780876147",
+  "job_run_id": "222813126927416",
+  "task_run_id": "90488727415438",
+  "result": {
+    "run_id": "cee97894-2a8d-4763-b5d9-214eebb176b3",
+    "status": "VALIDATED_DEMONSTRATION",
+    "validation_checks_passed": 13,
+    "delta_snapshot_count": 15,
+    "mlflow_run_id": "13377612f169449b85bdef25e7cf9737"
+  },
+  "data_mode": "FICTIONAL_SMOKE_DATA_ONLY",
+  "updated_source_workspace_execution_verified": false,
+  "production_permissions_verified": false,
+  "approved_data_execution_verified": false,
+  "github_release_published": false
+}
