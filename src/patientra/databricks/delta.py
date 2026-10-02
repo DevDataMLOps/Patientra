@@ -87,7 +87,8 @@ def publish_snapshots(spark, root, catalog):
         if frame.count() != expected:
             raise PipelineError("Spark CSV count differs from validated artifact.")
         # Strings preserve reviewed CSV contracts, including blank censored labels.
-        frame.write.format("delta").mode("errorifexists").saveAsTable(name)
+        # Spark Connect serializes the canonical "error" mode across runtimes.
+        frame.write.format("delta").mode("error").saveAsTable(name)
         saved = spark.table(name)
         if saved.columns != fields or saved.count() != expected:
             raise PipelineError("Delta snapshot reconciliation failed.")
@@ -96,7 +97,7 @@ def publish_snapshots(spark, root, catalog):
         tables[path.relative_to(root).as_posix()] = {"table": name, "rows": expected}
     ml_json = (root / "ml/readmission_ml.json").read_text(encoding="utf-8")
     spark.createDataFrame([(manifest["run_id"], ml_json)], "run_id string, report_json string").write.format(
-        "delta").mode("errorifexists").saveAsTable(report_table)
+        "delta").mode("error").saveAsTable(report_table)
     if spark.table(report_table).filter((F.col("run_id") == manifest["run_id"])
                                        & (F.col("report_json") == ml_json)).count() != 1:
         raise PipelineError("ML report snapshot reconciliation failed.")

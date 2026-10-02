@@ -25,7 +25,9 @@ flowchart TD
 ```
 
 `notebooks/medallion.py` runs the existing reviewed Python algorithms and then
-publishes each successful run as new Delta tables. This is a bounded batch adapter,
+publishes each successful run as new Delta tables. Snapshot writes use the canonical Spark `error` save mode
+(fail if the table exists), avoiding the `errorifexists` alias rejected by some
+Spark Connect clients. This is a bounded batch adapter,
 not a distributed rewrite: input bytes total at most 50 MiB; identity, feature, and
 ML processing use driver memory. Benchmark realistic deliveries before increasing
 the cap or using this beyond the case study. Delta tables retain strings to preserve
