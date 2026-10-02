@@ -1,0 +1,124 @@
+{
+  "cohort": {
+    "eligible_admissions": 2827,
+    "excluded_label_rows": 111,
+    "gold_rows": 2938,
+    "observed_readmissions": 548,
+    "pending_identity_excluded_admissions": 24,
+    "unresolved_identity_reviews": 8
+  },
+  "configuration": {
+    "C": 1.0,
+    "hyperparameter_search": false,
+    "max_iter": 2000,
+    "minimum_cell_size": 11,
+    "model": "logistic_regression",
+    "seed": 42,
+    "solver": "lbfgs",
+    "threshold": 0.5
+  },
+  "created_at_utc": "2026-10-02T00:15:08.847653Z",
+  "evaluation": {
+    "logistic_regression": {
+      "average_precision": 0.329779,
+      "balanced_accuracy_at_0_5": 0.5,
+      "brier_score": 0.147278,
+      "confusion_matrix_at_0_5": null,
+      "confusion_matrix_suppressed": true,
+      "log_loss": 0.460957,
+      "roc_auc": 0.695453
+    },
+    "training_prevalence_baseline": {
+      "average_precision": 0.195795,
+      "balanced_accuracy_at_0_5": 0.5,
+      "brier_score": 0.15746,
+      "confusion_matrix_at_0_5": null,
+      "confusion_matrix_suppressed": true,
+      "log_loss": 0.494521,
+      "roc_auc": 0.5
+    }
+  },
+  "features": {
+    "categorical": [
+      "hospital",
+      "sex",
+      "diagnosis_group",
+      "discharge_status"
+    ],
+    "excluded": [
+      "identifiers",
+      "dates",
+      "labels",
+      "label_status",
+      "observation_end_date",
+      "laboratory_summaries"
+    ],
+    "numeric": [
+      "age_at_admit",
+      "length_of_stay_days",
+      "prior_completed_admission_count",
+      "prior_admission_30d_count",
+      "prior_admission_365d_count",
+      "prior_same_diagnosis_group_count",
+      "prior_distinct_hospital_count",
+      "days_since_prior_discharge"
+    ]
+  },
+  "governance": {
+    "clinical_accuracy": "NOT_ASSESSED",
+    "identity_reviews_resolved_by_ml": false,
+    "individual_predictions_exported": false,
+    "limitations": [
+      "synthetic case-study data",
+      "provisional identity resolution",
+      "new-patient temporal holdout only",
+      "no external or prospective validation",
+      "no clinical threshold selection",
+      "no subgroup fairness assessment",
+      "confidence intervals not estimated"
+    ],
+    "model_artifact_exported": false,
+    "public_ml_deployment": false,
+    "release_status": "DEMONSTRATION_ONLY"
+  },
+  "implementation_sha256": "74990810e7dc3ab6476df6e2c7a69aefb070bb2892722be6020fd501931e468a",
+  "prediction_time": "index discharge; diagnosis/discharge fields assumed available",
+  "rule_version": "phase10-readmission-v1",
+  "runtime": {
+    "joblib": "1.6.0",
+    "numpy": "2.4.6",
+    "python": "3.11.9",
+    "scikit-learn": "1.7.2",
+    "scipy": "1.17.1",
+    "threadpoolctl": "3.7.0"
+  },
+  "source_sha256": {
+    "gold": "9fc5c40f8852140213b56e32df0731e975dbc1877c9d4e1ea34a4def555c4388",
+    "gold_audit": "e01838e0bba81440fa92509f70bb3c84395aa048d25976f78c4175554c44079c",
+    "identity_audit": "3aa1443cda59752808a547185d94e0bf105d15322163855da910f4a05a34f8bd",
+    "patient_master": "3617130d787a83d3c5537bfa8d4ee040762cd16bb826d57a1a71a625b3edec5e"
+  },
+  "split": {
+    "cutoff_date": "2025-01-01",
+    "future_returning_patient_rows_excluded": 200,
+    "label_embargo_days": 30,
+    "shared_master_patients": 0,
+    "test_admissions": 761,
+    "test_master_patients": 551,
+    "test_readmissions": 149,
+    "time_boundary_or_incomplete_followup_rows_excluded": 204,
+    "train_admissions": 1638,
+    "train_master_patients": 1260,
+    "train_readmissions": 319
+  },
+  "technical_checks": {
+    "aggregate_only_output": "PASS",
+    "convergence": "PASS",
+    "identity_exclusion": "PASS",
+    "input_immutability": "PASS",
+    "input_validation": "PASS",
+    "patient_disjoint_split": "PASS",
+    "train_only_preprocessing": "PASS",
+    "training_labels_matured": "PASS"
+  }
+}
