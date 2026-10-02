@@ -43,7 +43,7 @@ The public deployment serves the **reconstructed** release: **548 readmissions,
 bearer token. This demonstration is distinct from the historical human-reviewed
 results below and does not establish clinical accuracy or production readiness.
 
-## Phase 10 ML demonstration
+## Machine Learning demonstration
 
 The local [readmission-risk experiment](docs/phase10-ml.md) compares logistic
 regression with a training-prevalence baseline using a temporal, patient-disjoint
