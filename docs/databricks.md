@@ -61,8 +61,8 @@ approved observation end before validating/deploying. The fixed ML cutoff is
 2025-01-01 and is not optimized against model performance.
 
 ```powershell
-$env:DATABRICKS_BUNDLE_VAR_source_commit = git rev-parse HEAD
-$env:DATABRICKS_BUNDLE_VAR_observation_end = '2025-12-31'
+$env:BUNDLE_VAR_source_commit = git rev-parse HEAD
+$env:BUNDLE_VAR_observation_end = '2025-12-31'
 databricks bundle validate -t dev
 databricks bundle deploy -t dev
 databricks bundle run -t dev medallion
@@ -126,8 +126,20 @@ official workflow.
 
 The implementation and synthetic local tests can be validated without workspace
 credentials. Successful bundle schema validation is not successful deployment.
-Live execution, Delta verification, MLflow logging, and access-control inspection
-must be recorded from the canonical workspace before calling the migration complete.
+Development execution of source commit `61e71e0374096cf47a424d55cb0a32b78e87b6ab`
+was confirmed by maintainer-supplied job screenshots and final notebook output on
+2026-10-02: job run `222813126927416`, pipeline run
+`cee97894-2a8d-4763-b5d9-214eebb176b3`, 13 validation checks, 15 Delta snapshots,
+and MLflow run `13377612f169449b85bdef25e7cf9737`. This used fictional development
+data and returned `VALIDATED_DEMONSTRATION`. See `databricks-dev-evidence.json`.
+The subsequent workflow and error-diagnostic corrections require a fresh workspace
+run for validation of the updated source. Production permissions, approved-data
+execution, and GitHub release publication remain unverified.
+
+Publication failures report only the MLflow or Delta stage, run UUID, exception
+class, and available validated Spark error-condition/SQLSTATE codes. Exception
+messages, parameters, patient values, and tracebacks remain suppressed.
+The earlier failed run was manually recovered; its original cause is unknown.
 
 CI also checks the bundle against the official CLI 1.19.0 JSON schema. To run that
 check locally, install `PyYAML jsonschema regex`, save `databricks bundle schema`

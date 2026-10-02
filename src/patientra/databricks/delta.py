@@ -13,6 +13,29 @@ from pathlib import Path
 from patientra.databricks.pipeline import PipelineError, verify_run
 
 
+def publication_error_details(error, stage, run_id):
+    """Return classifications only; never log messages, parameters, or tracebacks."""
+    if stage not in {"mlflow", "delta_publication"}:
+        raise ValueError("Invalid publication stage.")
+    if not re.fullmatch(r"[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}", run_id):
+        raise ValueError("Invalid run UUID.")
+    details = {"stage": stage, "run_id": run_id}
+    kind = type(error).__name__
+    details["exception_type"] = kind if re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,127}", kind) else "Exception"
+    for key, methods in (("error_condition", ("getCondition", "getErrorClass")),
+                         ("sql_state", ("getSqlState",))):
+        for method in methods:
+            try:
+                value = getattr(error, method)()
+            except Exception:
+                continue
+            pattern = r"[A-Z][A-Z0-9_.]{0,127}" if key == "error_condition" else r"[A-Z0-9]{5}"
+            if isinstance(value, str) and re.fullmatch(pattern, value):
+                details[key] = value
+                break
+    return details
+
+
 def identifier(value):
     if not re.fullmatch(r"[a-z][a-z0-9_]{0,62}", value):
         raise PipelineError("Invalid Unity Catalog identifier.")

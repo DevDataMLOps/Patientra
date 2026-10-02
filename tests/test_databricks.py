@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from patientra.databricks.pipeline import PipelineError, run_pipeline, verify_run
-from patientra.databricks.delta import identifier, snapshot_plan
+from patientra.databricks.delta import identifier, snapshot_plan, publication_error_details
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("demo", REPOSITORY / "scripts/generate_databricks_demo.py")
@@ -67,3 +67,49 @@ def test_invalid_inputs_fail_before_writing(delivery, tmp_path):
     for invalid in ("patientra; DROP CATALOG x", "Patientra", "../data", ""):
         with pytest.raises(PipelineError):
             identifier(invalid)
+
+
+def test_publication_diagnostics_keep_classification_without_sensitive_payload():
+    class SparkFailure(Exception):
+        def getCondition(self):
+            return "INSUFFICIENT_PERMISSIONS"
+
+        def getSqlState(self):
+            return "42501"
+
+        def getMessageParameters(self):
+            raise AssertionError("Sensitive parameters must not be read")
+
+    error = SparkFailure("patient name, secret key, raw result, and /protected/path")
+    details = publication_error_details(error, "delta_publication", "cee97894-2a8d-4763-b5d9-214eebb176b3")
+    assert details == {"stage": "delta_publication", "run_id": "cee97894-2a8d-4763-b5d9-214eebb176b3",
+                       "exception_type": "SparkFailure", "error_condition": "INSUFFICIENT_PERMISSIONS",
+                       "sql_state": "42501"}
+    assert "patient" not in json.dumps(details)
+    assert str(error) not in json.dumps(details)
+
+
+def test_publication_diagnostics_fallback_and_untrusted_metadata():
+    class LegacyFailure(Exception):
+        def getCondition(self):
+            raise RuntimeError("method unavailable")
+
+        def getErrorClass(self):
+            return "TABLE_OR_VIEW_NOT_FOUND"
+
+        def getSqlState(self):
+            return "secret-value"
+
+    run_id = "cee97894-2a8d-4763-b5d9-214eebb176b3"
+    details = publication_error_details(LegacyFailure("private"), "mlflow", run_id)
+    assert details["error_condition"] == "TABLE_OR_VIEW_NOT_FOUND"
+    assert "sql_state" not in details
+    class UnsafeFailure(Exception):
+        def getCondition(self):
+            return "PRIVATE PATIENT\n" + "X" * 200
+
+    assert "error_condition" not in publication_error_details(UnsafeFailure(), "mlflow", run_id)
+    with pytest.raises(ValueError):
+        publication_error_details(RuntimeError(), "private-path", run_id)
+    with pytest.raises(ValueError):
+        publication_error_details(RuntimeError(), "mlflow", "patient-name")

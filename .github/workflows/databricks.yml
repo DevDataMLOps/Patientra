@@ -28,8 +28,8 @@ jobs:
     env:
       DATABRICKS_HOST: https://dbc-c4f30ab9-7317.cloud.databricks.com
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      DATABRICKS_BUNDLE_VAR_source_commit: ${{ github.sha }}
-      DATABRICKS_BUNDLE_VAR_observation_end: ${{ inputs.observation_end }}
+      BUNDLE_VAR_source_commit: ${{ github.sha }}
+      BUNDLE_VAR_observation_end: ${{ inputs.observation_end }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7

@@ -36,7 +36,7 @@ if not (repository / "src/patientra").is_dir():
 sys.path.insert(0, str(repository / "src"))
 
 from patientra.databricks.pipeline import run_pipeline, verify_run
-from patientra.databricks.delta import identifier, publish_snapshots
+from patientra.databricks.delta import identifier, publish_snapshots, publication_error_details
 
 catalog = identifier(dbutils.widgets.get("catalog"))
 demo_setting = dbutils.widgets.get("demo")
@@ -94,6 +94,7 @@ except Exception:
 import mlflow
 import mlflow.sklearn
 
+publication_stage = "mlflow"
 try:
     report = json.loads((persisted / "ml/readmission_ml.json").read_text())
     mlflow.sklearn.autolog(disable=True)
@@ -109,9 +110,12 @@ try:
             mlflow.log_metrics({f"{model}.{key}": value for key, value in values.items()
                                 if isinstance(value, (float, int)) and not isinstance(value, bool)})
         mlflow.log_dict(report, "aggregate_readmission_ml.json")
+    publication_stage = "delta_publication"
     release = publish_snapshots(spark, persisted, catalog)
-except Exception:
-    raise RuntimeError("PATIENTRA publication failed; inspect protected evidence and registry before rerunning.") from None
+except Exception as exc:
+    details = publication_error_details(exc, publication_stage, run_id)
+    raise RuntimeError("PATIENTRA publication failed: " + json.dumps(details, sort_keys=True)
+                       + "; inspect protected evidence and registry before rerunning.") from None
 
 # COMMAND ----------
 # Aggregate result only. No display() of Bronze/Silver/Gold patient rows.
