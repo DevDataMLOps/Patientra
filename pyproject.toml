@@ -28,6 +28,7 @@ Documentation = "https://github.com/DevDataMLOps/Patientra/tree/main/docs"
 
 [project.optional-dependencies]
 api = ["fastapi>=0.115,<1.0", "uvicorn>=0.30,<1.0", "pydantic>=2.9,<3.0"]
+ml = ["scikit-learn==1.7.2"]
 
 [project.scripts]
 patientra-ingest = "patientra.ingestion.ingest:main"
@@ -42,6 +43,7 @@ patientra-serve = "patientra.serving.store:main"
 patientra-api = "patientra.api.app:main"
 patientra-api-cloud = "patientra.api.app:cloud_main"
 patientra-export-release = "patientra.api.bundle:main"
+patientra-ml = "patientra.ml.readmission:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

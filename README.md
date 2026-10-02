@@ -43,6 +43,14 @@ The public deployment serves the **reconstructed** release: **548 readmissions,
 bearer token. This demonstration is distinct from the historical human-reviewed
 results below and does not establish clinical accuracy or production readiness.
 
+## Phase 10 ML demonstration
+
+The local [readmission-risk experiment](docs/phase10-ml.md) compares logistic
+regression with a training-prevalence baseline using a temporal, patient-disjoint
+holdout. See the [executed aggregate evidence and model card](docs/evidence/phase-10-ml-intelligence/README.md).
+This is a synthetic-data demonstration; individual risk scores are not published
+or deployed, and eight reconstructed identity reviews remain unresolved.
+
 ## RESULTS
 
 These are the three business questions the Core MVP calculates from the governed

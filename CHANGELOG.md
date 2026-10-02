@@ -3,6 +3,17 @@
 All notable changes to PATIENTRA are documented here. Versions follow the project
 phases rather than claiming production or clinical release readiness.
 
+## Unreleased — Phase 10 ML intelligence
+
+- Added a local discharge-time readmission demonstration comparing logistic
+  regression with a training-prevalence baseline on a fixed future holdout.
+- Excluded pending identities, required mature labels and patient-disjoint splits,
+  and fitted all preprocessing on training only. Exported reviewed aggregate metrics
+  and provenance, with small confusion matrices suppressed and no model/row scores.
+- Documented the model card, repeatable command, honest threshold limitations,
+  and eight unresolved reviews. No ML inference service or clinical release.
+- Added focused privacy, lineage, leakage, validation and reproducibility tests.
+
 ## Unreleased — Phase 9 controlled dashboard
 
 - Added an aggregate-only GitHub screenshot showcase, live dashboard/Swagger links,
