@@ -30,6 +30,32 @@
   <a href="SECURITY.md">security</a>
 </p>
 
+## Live synthetic prototype (local)
+
+[Open the four-view prototype on this computer](http://127.0.0.1:8765/prototype) ·
+[Local Swagger / FastAPI](http://127.0.0.1:8765/docs) ·
+[Startup and demo instructions](docs/live-prototype.md)
+
+Explore **Pipeline**, **Governance**, **Product & API**, and **ML demonstration**:
+synthetic hospital data → governed pipeline → validated aggregates → API →
+dashboard → Phase 10 evaluation. The executed fixture passed **13/13 release
+checks** and demonstrates quarantine, suppression, unresolved identity review,
+and a temporal holdout with **zero shared patients**.
+
+**These links run locally, not on a public hosting service.** Start the prototype
+on the computer where you open them:
+
+```powershell
+python -m pip install -e ".[api,ml]"
+python scripts/run_prototype.py
+```
+
+The command prints the local token-file path. Copy that file's contents into
+**Connect** or **Swagger → Authorize**, without a `Bearer` prefix. Credentials and
+runtime data are excluded from Git. All metrics are **DEMONSTRATION_ONLY**;
+clinical accuracy is not assessed. Databricks evidence and the existing Render
+dashboard are linked separately within the prototype and describe separate runs.
+
 ## Live dashboard showcase
 
 [Open the dashboard](https://patientra-api.onrender.com/dashboard) ·
