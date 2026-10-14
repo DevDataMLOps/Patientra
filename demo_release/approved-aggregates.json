@@ -1,0 +1,141 @@
+{
+  "contract": "phase8-approved-aggregates-v1",
+  "overall": {
+    "eligible_admissions": 200,
+    "readmitted_admissions": 40,
+    "not_readmitted_admissions": 160,
+    "readmission_rate_pct": 20.0,
+    "wilson_95_lower_pct": 15.05,
+    "wilson_95_upper_pct": 26.09
+  },
+  "breakdowns": [
+    {
+      "eligible_admissions": 200,
+      "readmitted_admissions": 40,
+      "not_readmitted_admissions": 160,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 15.05,
+      "wilson_95_upper_pct": 26.09,
+      "dimension": "age_band",
+      "category": "50-64"
+    },
+    {
+      "eligible_admissions": 200,
+      "readmitted_admissions": 40,
+      "not_readmitted_admissions": 160,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 15.05,
+      "wilson_95_upper_pct": 26.09,
+      "dimension": "diagnosis_group",
+      "category": "I50"
+    },
+    {
+      "eligible_admissions": 100,
+      "readmitted_admissions": 20,
+      "not_readmitted_admissions": 80,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 13.34,
+      "wilson_95_upper_pct": 28.88,
+      "dimension": "discharge_month",
+      "category": "2024-06"
+    },
+    {
+      "eligible_admissions": 100,
+      "readmitted_admissions": 20,
+      "not_readmitted_admissions": 80,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 13.34,
+      "wilson_95_upper_pct": 28.88,
+      "dimension": "discharge_month",
+      "category": "2025-06"
+    },
+    {
+      "eligible_admissions": 200,
+      "readmitted_admissions": 40,
+      "not_readmitted_admissions": 160,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 15.05,
+      "wilson_95_upper_pct": 26.09,
+      "dimension": "discharge_status",
+      "category": "home"
+    },
+    {
+      "eligible_admissions": 100,
+      "readmitted_admissions": 20,
+      "not_readmitted_admissions": 80,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 13.34,
+      "wilson_95_upper_pct": 28.88,
+      "dimension": "discharge_year",
+      "category": "2024"
+    },
+    {
+      "eligible_admissions": 100,
+      "readmitted_admissions": 20,
+      "not_readmitted_admissions": 80,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 13.34,
+      "wilson_95_upper_pct": 28.88,
+      "dimension": "discharge_year",
+      "category": "2025"
+    },
+    {
+      "eligible_admissions": 200,
+      "readmitted_admissions": 40,
+      "not_readmitted_admissions": 160,
+      "readmission_rate_pct": 20.0,
+      "wilson_95_lower_pct": 15.05,
+      "wilson_95_upper_pct": 26.09,
+      "dimension": "length_of_stay_band",
+      "category": "4-7"
+    },
+    {
+      "eligible_admissions": 133,
+      "readmitted_admissions": 26,
+      "not_readmitted_admissions": 107,
+      "readmission_rate_pct": 19.55,
+      "wilson_95_lower_pct": 13.7,
+      "wilson_95_upper_pct": 27.1,
+      "dimension": "sex",
+      "category": "F"
+    },
+    {
+      "eligible_admissions": 67,
+      "readmitted_admissions": 14,
+      "not_readmitted_admissions": 53,
+      "readmission_rate_pct": 20.9,
+      "wilson_95_lower_pct": 12.88,
+      "wilson_95_upper_pct": 32.07,
+      "dimension": "sex",
+      "category": "M"
+    }
+  ],
+  "status": {
+    "release_status": "PASS",
+    "freshness_at_publication": "FRESH",
+    "current_freshness": "FRESH",
+    "published_at_utc": "2026-10-14T02:52:18.298891Z",
+    "source_run_at_utc": "2026-10-14T02:52:04.457495Z",
+    "current_source_age_seconds": 13,
+    "validation_checks_passed": 13,
+    "analytics_sha256": "f13fa9e34e99db4ac8c8d1338e3b666f0923eaf4704bb1e18e12d3d0360a1dd2",
+    "breakdown_sha256": "98efd978f80e25c2d2c24e5b2ecb1eada321137b9f7f7a45f86fee46f4325203",
+    "gate_sha256": "5e6b01f634b746a80dbf986e610032b13b257a39fcb2bb2d135be743ae42df60"
+  },
+  "quality": {
+    "gold_rows": 200,
+    "eligible_rows": 200,
+    "excluded_rows": 0,
+    "breakdown_rows": 14,
+    "released_breakdown_rows": 10,
+    "suppressed_rows": 4,
+    "minimum_cell_size": 11,
+    "validation_checks_passed": 13,
+    "row_reconciliation": "PASS",
+    "suppression_integrity": "PASS",
+    "identity_resolution": "reviews_unresolved",
+    "unresolved_identity_reviews": 1,
+    "unique_master_patients": 160,
+    "clinical_accuracy": "not_assessed"
+  }
+}
