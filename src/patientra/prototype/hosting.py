@@ -25,17 +25,21 @@ def load_config(root):
 
 def main():
     repository = Path.cwd()
+    stage = "release_config"
     try:
         config = load_config(repository / "demo_release")
+        stage = "approved_snapshot"
         app = create_prototype_app(**config, token=os.environ.get("PATIENTRA_HOSTED_DEMO_TOKEN", ""), hosted=True)
+        stage = "render_hostname"
         hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "")
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]*\.onrender\.com", hostname):
             raise ValueError("Invalid Render hostname")
+        stage = "port"
         port = int(os.environ.get("PORT", "10000"))
         if not 1 <= port <= 65535:
             raise ValueError("Invalid port")
-    except (OSError, ValueError, SnapshotUnavailable):
-        raise SystemExit("Hosted synthetic prototype configuration or approved artifacts are invalid") from None
+    except (OSError, ValueError, SnapshotUnavailable) as exc:
+        raise SystemExit(f"Hosted synthetic prototype startup failed at {stage} ({type(exc).__name__}); no values logged") from None
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=[hostname, "localhost", "127.0.0.1"])
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=port, access_log=False, proxy_headers=False,

@@ -1,0 +1,2 @@
+# Approved synthetic artifacts are hash-pinned across Windows and Linux.
+demo_release/*.json text eol=lf

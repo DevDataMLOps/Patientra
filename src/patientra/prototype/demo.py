@@ -95,6 +95,6 @@ def prepare_demo(repository, root):
         payload["ml"][model] = {key: ml["evaluation"][model][key] for key in metric_fields}
     evidence = DemoEvidence.model_validate_json(json.dumps(payload))
     evidence_path = root / "prototype-evidence.json"
-    evidence_path.write_text(evidence.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    evidence_path.write_text(evidence.model_dump_json(indent=2) + "\n", encoding="utf-8", newline="\n")
     return {"bundle_path": str(bundle), "bundle_sha256": bundle_digest,
             "evidence_path": str(evidence_path), "evidence_sha256": sha(evidence_path), "run_id": manifest["run_id"]}

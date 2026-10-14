@@ -116,6 +116,10 @@ def test_hosting_config_restricts_files_and_token_binding(monkeypatch):
     from patientra.prototype.hosting import load_config, main
     from patientra.prototype.app import read_evidence
     config = load_config(REPOSITORY / "demo_release")
+    # Git text transport must not change the bytes pinned for Linux hosting.
+    for path, key in ((config["bundle_path"], "bundle_sha256"), (config["evidence_path"], "evidence_sha256")):
+        assert b"\r\n" not in path.read_bytes()
+        assert hashlib.sha256(path.read_text(encoding="utf-8").encode("utf-8")).hexdigest() == config[key]
     assert read_evidence(config["evidence_path"], config["evidence_sha256"], config["bundle_path"], config["bundle_sha256"]).data_mode == "SYNTHETIC_ONLY"
     monkeypatch.chdir(REPOSITORY)
     monkeypatch.delenv("PATIENTRA_HOSTED_DEMO_TOKEN", raising=False)

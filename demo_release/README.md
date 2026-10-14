@@ -10,6 +10,8 @@ has 100 training and 98 holdout admissions with zero shared master patients.
 the hashes and their cross-artifact linkage on startup and every request. No raw
 patient data, identity crosswalk, review worksheet, quarantine record, suppressed
 group label, individual prediction, trained model, or bearer token is included.
+JSON artifacts use canonical LF line endings, enforced by `.gitattributes`, so
+Git transport and Windows checkouts preserve the approved bytes.
 
 The synthetic release is frozen; hosting does not regenerate the delivery or run
 Databricks. Its original timestamps remain visible and its freshness ages normally.
