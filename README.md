@@ -30,7 +30,7 @@
   <a href="SECURITY.md">security</a>
 </p>
 
-## Live synthetic prototype
+## Live prototype
 
 [Open the public four-view prototype](https://patientra-prototype.onrender.com/prototype) ·
 [Hosted Swagger / FastAPI](https://patientra-prototype.onrender.com/docs) ·
