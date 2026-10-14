@@ -42,7 +42,7 @@ def create_app(database=None, *, token=None, snapshot_sha256=None, release_bundl
     rate_lock = threading.Lock()
     app = FastAPI(title="PATIENTRA aggregate API", version="phase8-api-v1",
                   description="Approved aggregate demonstration API. Use Authorize with your bearer token. "
-                  "Eight reconstructed identity reviews remain unresolved; clinical accuracy is not assessed.",
+                  "Identity-review counts belong to the loaded release; clinical accuracy is not assessed.",
                   docs_url="/docs", redoc_url=None, openapi_url="/openapi.json", redirect_slashes=False,
                   swagger_ui_parameters={"persistAuthorization": False, "validatorUrl": None})
     bearer = HTTPBearer(auto_error=False)
@@ -66,6 +66,9 @@ def create_app(database=None, *, token=None, snapshot_sha256=None, release_bundl
         keys = [key for key, _ in request.query_params.multi_items()]
         if set(keys) - allowed or len(keys) != len(set(keys)):
             raise HTTPException(422, "Invalid query parameters")
+
+    # Optional controlled experiences reuse the same authentication and rate budget.
+    app.state.authenticate = authenticate
 
     def snapshot(_auth=Depends(authenticate)) -> Snapshot:
         try:

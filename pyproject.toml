@@ -51,6 +51,7 @@ include = ["patientra*"]
 
 [tool.setuptools.package-data]
 "patientra.api" = ["web/*.html", "web/*.css", "web/*.js"]
+"patientra.prototype" = ["web/*.html", "web/*.css", "web/*.js"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
