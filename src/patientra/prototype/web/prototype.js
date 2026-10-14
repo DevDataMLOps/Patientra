@@ -18,26 +18,26 @@
   function disconnect() {generation++; controller?.abort(); token=""; $("token").value=""; clear(); $("token").hidden=false; $("connect").hidden=false; $("connect").disabled=false; $("disconnect").hidden=true; $("refresh").hidden=true; $("message").textContent="Disconnected. Credentials and displayed data cleared.";}
   function entries(id, rows) {$(id).replaceChildren(...rows.map(([label,value])=>{const e=document.createElement("div"); e.append(node("dt",label),node("dd",String(value)));return e;}));}
   function metrics(id, values) {$(id).replaceChildren(...values.map(([label,value,note])=>{const e=node("article","","metric"); e.append(node("p",label),node("strong",String(value)),node("small",note));return e;}));}
-  function checks(id, values) {$(id).replaceChildren(...values.map(c=>{const e=document.createElement("li");e.append(node("div",pretty(c.check)),node("span","âœ“ PASS"));return e;}));}
+  function checks(id, values) {$(id).replaceChildren(...values.map(c=>{const e=document.createElement("li");e.append(node("div",pretty(c.check)),node("span","✓ PASS"));return e;}));}
   function table(id, rows) {$(id).replaceChildren(...rows.map(values=>{const tr=document.createElement("tr");values.forEach(v=>tr.append(node("td",String(v))));return tr;}));}
   function drawBreakdowns() {
     if (!state) return;
     const rows=state.breakdowns.filter(row=>row.dimension===$("dimension").value);
-    table("breakdowns",rows.map(r=>[r.category,number(r.eligible_admissions),number(r.readmitted_admissions),percent(r.readmission_rate_pct),`${percent(r.wilson_95_lower_pct)} â€“ ${percent(r.wilson_95_upper_pct)}`]));
+    table("breakdowns",rows.map(r=>[r.category,number(r.eligible_admissions),number(r.readmitted_admissions),percent(r.readmission_rate_pct),`${percent(r.wilson_95_lower_pct)} – ${percent(r.wilson_95_upper_pct)}`]));
     $("empty").hidden=rows.length>0;
-    $("breakdown-caption").textContent=`${rows.length} released groups Â· ${state.quality.suppressed_rows} suppressed rows across the release`;
+    $("breakdown-caption").textContent=`${rows.length} released groups · ${state.quality.suppressed_rows} suppressed rows across the release`;
   }
   function render() {
     const {evidence:e,overall:o,quality:q,status:s}=state, split=e.ml.split;
     const stages=[["Bronze",number(e.bronze.admissions),"Raw admissions"],["Silver",number(e.silver.admissions),"Accepted admissions"],["Identity",number(e.master_patients),"Master patients"],["Gold",number(e.gold_rows),"Feature rows"],["Analytics",number(q.released_breakdown_rows),"Released groups"],["Validation","13 / 13","Release checks passed"]];
     $("stages").replaceChildren(...stages.map(([name,value,label],i)=>{const el=node("article","","stage");el.append(node("small",`STAGE ${String(i+1).padStart(2,"0")}`),node("h3",name),node("strong",value),node("p",label));return el;}));
     table("counts",["patients","admissions","lab_results"].map(d=>[pretty(d),e.bronze[d],e.silver[d],e.quarantine[d]]));
-    entries("provenance",[["Data boundary",e.data_mode],["Pipeline run",e.run_id],["Base source commit",e.source_commit],["Executed (UTC)",e.created_at_utc],["Aggregate bundle SHA-256",e.bundle_sha256],["Execution environment","Local Python Â· no cloud job launched"]]);
+    entries("provenance",[["Data boundary",e.data_mode],["Pipeline run",e.run_id],["Base source commit",e.source_commit],["Executed (UTC)",e.created_at_utc],["Aggregate bundle SHA-256",e.bundle_sha256],["Pipeline execution","Local Python · no cloud job launched"]]);
     const rejected=Object.values(e.quarantine).reduce((a,b)=>a+b,0);
     metrics("governance-metrics",[["Release validation","13 / 13","All technical release checks passed"],["Quarantined records",rejected,"Invalid fictional inputs excluded"],["Suppressed groups",q.suppressed_rows,"Protected cells remain unpublished"],["Unresolved reviews",e.unresolved_identity_reviews,"No automatic human review decisions"]]);
     checks("release-checks",e.validation_checks);
     entries("governance-details",[["Patient quarantine",e.quarantine.patients],["Admission quarantine",e.quarantine.admissions],["Lab quarantine",e.quarantine.lab_results],["Minimum released cell size",q.minimum_cell_size],["Suppression integrity",q.suppression_integrity],["Identity resolution",pretty(q.identity_resolution)],["Clinical accuracy","Not assessed"]]);
-    metrics("product-metrics",[["30-day readmission rate",percent(o.readmission_rate_pct),`95% Wilson interval ${percent(o.wilson_95_lower_pct)} â€“ ${percent(o.wilson_95_upper_pct)}`],["Eligible admissions",number(o.eligible_admissions),`${q.excluded_rows} excluded label rows`],["Observed readmissions",number(o.readmitted_admissions),`${o.not_readmitted_admissions} not readmitted`],["Released groups",q.released_breakdown_rows,`${q.suppressed_rows} groups withheld`]]);
+    metrics("product-metrics",[["30-day readmission rate",percent(o.readmission_rate_pct),`95% Wilson interval ${percent(o.wilson_95_lower_pct)} – ${percent(o.wilson_95_upper_pct)}`],["Eligible admissions",number(o.eligible_admissions),`${q.excluded_rows} excluded label rows`],["Observed readmissions",number(o.readmitted_admissions),`${o.not_readmitted_admissions} not readmitted`],["Released groups",q.released_breakdown_rows,`${q.suppressed_rows} groups withheld`]]);
     const dimensions=[...new Set(state.breakdowns.map(r=>r.dimension))];
     $("dimension").replaceChildren(...dimensions.map(d=>{const option=node("option",pretty(d));option.value=d;return option;}));drawBreakdowns();
     metrics("ml-metrics",[["Shared patients","0","Patient-disjoint temporal holdout"],["Training admissions",split.train_admissions,`${split.train_readmissions} observed readmissions`],["Holdout admissions",split.test_admissions,`${split.test_readmissions} observed readmissions`],["Identity exclusions",split.pending_identity_excluded_admissions,"Unresolved identity admissions excluded"]]);
@@ -45,7 +45,7 @@
     checks("ml-checks",e.ml.technical_checks);
     table("model-metrics",["roc_auc","average_precision","brier_score","balanced_accuracy_at_0_5","log_loss"].map(key=>[pretty(key),e.ml.logistic_regression[key].toFixed(4),e.ml.training_prevalence_baseline[key].toFixed(4)]));
     $("results").hidden=false;
-    $("message").textContent=`Authenticated synthetic release loaded Â· ${s.validation_checks_passed}/13 checks Â· analytics ${s.current_freshness.toLowerCase()} Â· fetched ${new Date().toLocaleTimeString()}`;
+    $("message").textContent=`Authenticated synthetic release loaded · ${s.validation_checks_passed}/13 checks · analytics ${s.current_freshness.toLowerCase()} · fetched ${new Date().toLocaleTimeString()}`;
   }
   async function get(path, signal) {
     const response=await fetch(path,{headers:{Authorization:`Bearer ${token}`},cache:"no-store",credentials:"omit",redirect:"error",signal});
@@ -55,7 +55,7 @@
   async function load() {
     const current=++generation; controller?.abort();controller=new AbortController();const signal=controller.signal;
     const timeout=setTimeout(()=>controller?.abort(),90000);
-    clear(); $("connect").disabled=true; $("refresh").disabled=true;$("message").textContent="Verifying the approved synthetic releaseâ€¦";
+    clear(); $("connect").disabled=true; $("refresh").disabled=true;$("message").textContent="Verifying the approved synthetic release…";
     try {
       const [evidence,overall,quality,status,first]=await Promise.all([get("/api/v1/prototype",signal),get("/api/v1/overall",signal),get("/api/v1/data-quality",signal),get("/api/v1/pipeline-status",signal),get("/api/v1/breakdowns?limit=100&offset=0",signal)]);
       if (!Number.isInteger(first.total) || first.total<0 || first.total>10000) throw new Error("Invalid release");

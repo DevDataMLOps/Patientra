@@ -56,6 +56,8 @@ def create_prototype_app(*, bundle_path, bundle_sha256, evidence_path, evidence_
             content = content.replace("Paste local demo token", "Paste hosted demo token")
             content = content.replace("your local token", "your hosted token")
             content = content.replace("THIS LOCAL RELEASE", "THIS HOSTED SYNTHETIC RELEASE")
+            content = content.replace("Working-copy prototype additions are identified by the local build record. The displayed source commit identifies the base checkout.",
+                                      "This frozen release was generated locally. The base source commit identifies that pipeline run; the hosted code version is recorded in Render deployment history.")
             return HTMLResponse(content, headers=headers)
         return FileResponse(ASSETS / name, media_type=media_type, headers=headers)
 
