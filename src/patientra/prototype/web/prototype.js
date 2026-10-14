@@ -32,7 +32,7 @@
     const stages=[["Bronze",number(e.bronze.admissions),"Raw admissions"],["Silver",number(e.silver.admissions),"Accepted admissions"],["Identity",number(e.master_patients),"Master patients"],["Gold",number(e.gold_rows),"Feature rows"],["Analytics",number(q.released_breakdown_rows),"Released groups"],["Validation","13 / 13","Release checks passed"]];
     $("stages").replaceChildren(...stages.map(([name,value,label],i)=>{const el=node("article","","stage");el.append(node("small",`STAGE ${String(i+1).padStart(2,"0")}`),node("h3",name),node("strong",value),node("p",label));return el;}));
     table("counts",["patients","admissions","lab_results"].map(d=>[pretty(d),e.bronze[d],e.silver[d],e.quarantine[d]]));
-    entries("provenance",[["Data boundary",e.data_mode],["Pipeline run",e.run_id],["Base source commit",e.source_commit],["Executed (UTC)",e.created_at_utc],["Aggregate bundle SHA-256",e.bundle_sha256],["Execution environment","Local Python · no cloud job launched"]]);
+    entries("provenance",[["Data boundary",e.data_mode],["Pipeline run",e.run_id],["Base source commit",e.source_commit],["Executed (UTC)",e.created_at_utc],["Aggregate bundle SHA-256",e.bundle_sha256],["Pipeline execution","Local Python · no cloud job launched"]]);
     const rejected=Object.values(e.quarantine).reduce((a,b)=>a+b,0);
     metrics("governance-metrics",[["Release validation","13 / 13","All technical release checks passed"],["Quarantined records",rejected,"Invalid fictional inputs excluded"],["Suppressed groups",q.suppressed_rows,"Protected cells remain unpublished"],["Unresolved reviews",e.unresolved_identity_reviews,"No automatic human review decisions"]]);
     checks("release-checks",e.validation_checks);
@@ -68,7 +68,7 @@
     } catch(error) {
       if(current!==generation)return;
       if(error.status===401)disconnect();else clear();
-      $("message").textContent=error.status===401 ? "Authentication failed. Paste the local demo token." : error.status===429 ? "Request limit reached. Wait one minute before refreshing." : "Release unavailable or inconsistent. No results are displayed.";
+      $("message").textContent=error.status===401 ? "Authentication failed. Paste the demo token." : error.status===429 ? "Request limit reached. Wait one minute before refreshing." : "Release unavailable or inconsistent. No results are displayed.";
     } finally {clearTimeout(timeout);if(current===generation){$("connect").disabled=false;$("refresh").disabled=false;}}
   }
   $("connect-form").addEventListener("submit",e=>{e.preventDefault();token=$("token").value;load();});

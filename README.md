@@ -30,6 +30,39 @@
   <a href="SECURITY.md">security</a>
 </p>
 
+## Live synthetic prototype
+
+[Open the public four-view prototype](https://patientra-prototype.onrender.com/prototype) ·
+[Hosted Swagger / FastAPI](https://patientra-prototype.onrender.com/docs) ·
+[Startup and demo instructions](docs/live-prototype.md)
+
+Explore **Pipeline**, **Governance**, **Product & API**, and **ML demonstration**:
+synthetic hospital data → governed pipeline → validated aggregates → API →
+dashboard → Phase 10 evaluation. The executed fixture passed **13/13 release
+checks** and demonstrates quarantine, suppression, unresolved identity review,
+and a temporal holdout with **zero shared patients**.
+
+The hosted prototype serves a **frozen, validated synthetic snapshot** on Render's
+Free plan. Obtain the hosted demo token privately from the maintainer and enter it
+in **Connect** or **Swagger → Authorize**, without a `Bearer` prefix. The hosted
+token is separate from the local token and is never published in Git. Free hosting
+may take about a minute to wake after inactivity. It does not launch pipeline
+jobs or train models in response to visitor requests.
+
+**Local development remains available:** [local prototype](http://127.0.0.1:8765/prototype)
+and [local Swagger](http://127.0.0.1:8765/docs). Start it on your computer:
+
+```powershell
+python -m pip install -e ".[api,ml]"
+python scripts/run_prototype.py
+```
+
+The command prints the local token-file path. Credentials and patient-level
+runtime artifacts are excluded from Git; only explicitly approved synthetic
+aggregate snapshots are included for hosting. All metrics are **DEMONSTRATION_ONLY**;
+clinical accuracy is not assessed. Databricks evidence and the existing Render
+dashboard are linked separately within the prototype and describe separate runs.
+
 ## Live dashboard showcase
 
 [Open the dashboard](https://patientra-api.onrender.com/dashboard) ·

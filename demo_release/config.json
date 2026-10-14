@@ -1,0 +1,6 @@
+{
+  "bundle_file": "approved-aggregates.json",
+  "bundle_sha256": "896e8f42143d5c1d4d883fb90ae187ec79770b31e50de48a2b9f761bd70fde07",
+  "evidence_file": "prototype-evidence.json",
+  "evidence_sha256": "2bdc10d4eae012494e495c1d6d7032762d781ddf4a98960d4a47244dda8ead52"
+}

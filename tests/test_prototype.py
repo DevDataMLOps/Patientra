@@ -93,3 +93,47 @@ def test_unavailable_release_clears_backend_and_shared_rate_limit(release, tmp_p
     for _ in range(60):
         assert api.get("/health", headers=AUTH).status_code == 200
     assert api.get("/api/v1/prototype", headers=AUTH).status_code == 429
+
+
+def test_hosted_shell_health_and_authenticated_data(release, tmp_path):
+    path = tmp_path / "evidence.json"
+    path.write_bytes(Path(release["evidence_path"]).read_bytes())
+    app = create_prototype_app(**{**{key: release[key] for key in
+        ("bundle_path", "bundle_sha256", "evidence_path", "evidence_sha256")}, "evidence_path": str(path)}, token=TOKEN, hosted=True)
+    api = TestClient(app)
+    shell = api.get("/")
+    assert shell.status_code == 200 and "Hosted synthetic prototype" in shell.text
+    assert "Paste hosted demo token" in shell.text and TOKEN not in shell.text
+    assert api.get("/healthz").json() == {"status": "ready", "data_mode": "SYNTHETIC_ONLY"}
+    assert api.get("/api/v1/prototype").status_code == 401
+    assert api.get("/api/v1/prototype", headers=AUTH).status_code == 200
+    path.write_text("changed")
+    assert api.get("/healthz").status_code == 503
+    assert api.get("/api/v1/prototype", headers=AUTH).status_code == 503
+
+
+def test_hosting_config_restricts_files_and_token_binding(monkeypatch):
+    from patientra.prototype.hosting import load_config, main
+    from patientra.prototype.app import read_evidence
+    config = load_config(REPOSITORY / "demo_release")
+    # Git text transport must not change the bytes pinned for Linux hosting.
+    for path, key in ((config["bundle_path"], "bundle_sha256"), (config["evidence_path"], "evidence_sha256")):
+        assert b"\r\n" not in path.read_bytes()
+        assert hashlib.sha256(path.read_text(encoding="utf-8").encode("utf-8")).hexdigest() == config[key]
+    assert read_evidence(config["evidence_path"], config["evidence_sha256"], config["bundle_path"], config["bundle_sha256"]).data_mode == "SYNTHETIC_ONLY"
+    monkeypatch.chdir(REPOSITORY)
+    monkeypatch.delenv("PATIENTRA_HOSTED_DEMO_TOKEN", raising=False)
+    with pytest.raises(SystemExit):
+        main()
+    monkeypatch.setenv("PATIENTRA_HOSTED_DEMO_TOKEN", TOKEN)
+    monkeypatch.setenv("RENDER_EXTERNAL_HOSTNAME", "patientra-prototype.onrender.com")
+    monkeypatch.setenv("PORT", "10000")
+    called = {}
+    import uvicorn
+    monkeypatch.setattr(uvicorn, "run", lambda app, **kwargs: called.update(app=app, **kwargs))
+    main()
+    assert called["host"] == "0.0.0.0" and called["port"] == 10000
+    assert called["access_log"] is False
+    api = TestClient(called["app"])
+    assert api.get("/healthz", headers={"Host": "patientra-prototype.onrender.com"}).status_code == 200
+    assert api.get("/healthz", headers={"Host": "attacker.example"}).status_code == 400

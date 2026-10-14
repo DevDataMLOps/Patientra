@@ -1,0 +1,144 @@
+{
+  "contract": "patientra-synthetic-prototype-v1",
+  "data_mode": "SYNTHETIC_ONLY",
+  "run_id": "fbb8e1b0-915d-42a8-9054-acefbbb76bb8",
+  "source_commit": "320a5e354b1af2eac3d39ae683d63e21d444f5e5",
+  "created_at_utc": "2026-10-14T02:52:17.769129Z",
+  "bundle_sha256": "896e8f42143d5c1d4d883fb90ae187ec79770b31e50de48a2b9f761bd70fde07",
+  "bronze": {
+    "patients": 161,
+    "admissions": 201,
+    "lab_results": 201
+  },
+  "silver": {
+    "patients": 160,
+    "admissions": 200,
+    "lab_results": 200
+  },
+  "quarantine": {
+    "patients": 1,
+    "admissions": 1,
+    "lab_results": 1
+  },
+  "gold_rows": 200,
+  "master_patients": 160,
+  "unresolved_identity_reviews": 1,
+  "validation_checks": [
+    {
+      "check": "phase_evidence_files",
+      "status": "PASS"
+    },
+    {
+      "check": "phase_evidence_index",
+      "status": "PASS"
+    },
+    {
+      "check": "package_version",
+      "status": "PASS"
+    },
+    {
+      "check": "sensitive_output_ignore_rules",
+      "status": "PASS"
+    },
+    {
+      "check": "gold_hash_lineage",
+      "status": "PASS"
+    },
+    {
+      "check": "analytics_output_hashes",
+      "status": "PASS"
+    },
+    {
+      "check": "gold_row_uniqueness",
+      "status": "PASS"
+    },
+    {
+      "check": "gold_label_audit_reconciliation",
+      "status": "PASS"
+    },
+    {
+      "check": "gold_analytics_reconciliation",
+      "status": "PASS"
+    },
+    {
+      "check": "breakdown_csv_json_reconciliation",
+      "status": "PASS"
+    },
+    {
+      "check": "suppression_integrity",
+      "status": "PASS"
+    },
+    {
+      "check": "identifier_exclusion",
+      "status": "PASS"
+    },
+    {
+      "check": "rule_version_chain",
+      "status": "PASS"
+    }
+  ],
+  "ml": {
+    "release_status": "DEMONSTRATION_ONLY",
+    "clinical_accuracy": "NOT_ASSESSED",
+    "model_artifact_exported": false,
+    "individual_predictions_exported": false,
+    "split": {
+      "cutoff_date": "2025-01-01",
+      "label_embargo_days": 30,
+      "shared_master_patients": 0,
+      "train_admissions": 100,
+      "test_admissions": 98,
+      "train_readmissions": 20,
+      "test_readmissions": 20,
+      "pending_identity_excluded_admissions": 2
+    },
+    "logistic_regression": {
+      "roc_auc": 0.882372,
+      "average_precision": 0.521795,
+      "brier_score": 0.101173,
+      "balanced_accuracy_at_0_5": 0.5,
+      "log_loss": 0.294895
+    },
+    "training_prevalence_baseline": {
+      "roc_auc": 0.5,
+      "average_precision": 0.204082,
+      "brier_score": 0.162449,
+      "balanced_accuracy_at_0_5": 0.5,
+      "log_loss": 0.506061
+    },
+    "technical_checks": [
+      {
+        "check": "aggregate_only_output",
+        "status": "PASS"
+      },
+      {
+        "check": "convergence",
+        "status": "PASS"
+      },
+      {
+        "check": "identity_exclusion",
+        "status": "PASS"
+      },
+      {
+        "check": "input_immutability",
+        "status": "PASS"
+      },
+      {
+        "check": "input_validation",
+        "status": "PASS"
+      },
+      {
+        "check": "patient_disjoint_split",
+        "status": "PASS"
+      },
+      {
+        "check": "train_only_preprocessing",
+        "status": "PASS"
+      },
+      {
+        "check": "training_labels_matured",
+        "status": "PASS"
+      }
+    ]
+  }
+}

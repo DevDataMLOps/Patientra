@@ -24,6 +24,25 @@ Use `--prepare-only` to build evidence without starting the server. Use
 existing artifacts; the launcher does not execute cloud jobs, deploy to Render,
 merge GitHub branches, or publish a release.
 
+## Public hosted prototype
+
+A separate Render Free web service serves the frozen synthetic release in
+`demo_release/`. It installs only `.[api]` and starts with
+`python -m patientra.prototype.hosting`, bound to `0.0.0.0:$PORT`.
+The owner supplies a separate `PATIENTRA_HOSTED_DEMO_TOKEN` in Render; the local
+token is not reused or published. Reviewers obtain the hosted token privately
+from the maintainer and enter it in Connect or Swagger Authorize.
+
+The public shell and `/healthz` contain no aggregate results or credentials.
+Data endpoints remain bearer-authenticated and share a 60-request/minute budget.
+The approved files are hash-verified on every request. The service has no database,
+raw-record endpoint, pipeline trigger, model training, or inference endpoint.
+The retained timestamps describe the frozen release; page refresh does not create
+a new run. Free hosting can sleep and take time to wake.
+
+Automatic deploys are disabled. New source commits require a deliberate maintainer
+deployment. The existing `patientra-api` Render service remains a separate release.
+
 ## Views and actual fixture behavior
 
 1. Pipeline: stage counts and Bronze = Silver + quarantine reconciliation.
