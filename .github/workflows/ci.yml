@@ -51,7 +51,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - uses: databricks/setup-cli@9230f12203ef173d0b901846f62a55ce997efef7
+      - uses: databricks/setup-cli@9625fdde9ba2607df0087e0d3ec7449198bf2180
         with:
           version: '1.19.0'
       - name: Validate against the official CLI schema
